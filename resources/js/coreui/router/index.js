@@ -26,7 +26,8 @@ import { AuthUtils } from '../mixins/auth-utils.js';
 This will check to see if the user is authenticated or not.
 */
 function requireAuth (to, from, next) {
-  if (window.localStorage.getItem('access_token')){
+  let accessToken = window.localStorage.getItem('access_token')
+  if ( typeof accessToken !== 'undefined' && accessToken !== null){
     // Verify the stored access token
     store.dispatch('user/getUser')
     store.watch(store.getters['user/getUser'], n => {

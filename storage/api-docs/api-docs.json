@@ -83,10 +83,6 @@
                                     "password": {
                                         "description": "Password",
                                         "type": "string"
-                                    },
-                                    "remember_me": {
-                                        "description": "Remember me",
-                                        "type": "boolean"
                                     }
                                 },
                                 "type": "object"

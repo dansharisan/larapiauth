@@ -9,14 +9,9 @@
 
 /**
  *  @OA\Server(
- *      url=L5_SWAGGER_CONST_HOST_1,
- *      description="Local server"
+ *      url=L5_SWAGGER_CONST_HOST,
+ *      description="Default server"
  *  )
- *
- *  @OA\Server(
- *      url=L5_SWAGGER_CONST_HOST_2,
- *      description="Dev server"
- * )
  */
 
 /**

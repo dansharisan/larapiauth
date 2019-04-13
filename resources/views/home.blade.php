@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="links">
-                    <a href="{{ url('/api/documentation') }}">API DOCUMENTATION</a> | <a href="{{ url('/admin/') }}">ADMIN PANEL</a> | <a href="{{ url('/userinfo/') }}">YOUR INFO</a>
+                    <a href="{{ url('/api') }}">API DOCUMENTATION</a> | <a href="{{ url('/admin/') }}">ADMIN PANEL</a> | <a href="{{ url('/userinfo/') }}">YOUR INFO</a>
                 </div>
             </div>
         </div>

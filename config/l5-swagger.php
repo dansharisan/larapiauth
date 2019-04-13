@@ -18,7 +18,7 @@ return [
         |--------------------------------------------------------------------------
         */
 
-        'api' => 'api/documentation',
+        'api' => 'api',
 
         /*
         |--------------------------------------------------------------------------
@@ -223,7 +223,6 @@ return [
      */
     'constants' => [
         'APP_NAME' => env('APP_NAME', 'LarapiAuth'),
-        'L5_SWAGGER_CONST_HOST_1' => env('APP_URL', 'localhost:8000'),
-        'L5_SWAGGER_CONST_HOST_2' => env('L5_SWAGGER_CONST_HOST', 'https://dev.project.com'),
+        'L5_SWAGGER_CONST_HOST' => env('APP_URL', 'localhost:8000'),
     ],
 ];

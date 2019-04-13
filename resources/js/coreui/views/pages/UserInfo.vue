@@ -83,7 +83,6 @@ export default {
     logout () {
       AuthAPI.logout()
         .then(response => {
-          debugger
           if (response.data && response.data.success) {
             // Clear token in localStorage
             window.localStorage.removeItem("access_token");

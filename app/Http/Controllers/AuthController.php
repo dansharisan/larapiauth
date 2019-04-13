@@ -131,11 +131,6 @@ class AuthController extends Controller
     *                         description="Password",
     *                         type="string",
     *                     ),
-    *                     @OA\Property(
-    *                         property="remember_me",
-    *                         description="Remember me",
-    *                         type="boolean",
-    *                     )
     *                 )
     *             )
     *         )
@@ -147,7 +142,6 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email',
             'password' => 'required|string',
-            // 'remember_me' => 'boolean'
         ]);
         if ($validator->fails()) {
             return response()->json(['success' => AppResponse::STATUS_FAILURE, 'errors'=>$validator->errors()], AppResponse::HTTP_UNPROCESSABLE_ENTITY);
@@ -158,27 +152,12 @@ class AuthController extends Controller
         $credentials['deleted_at'] = null;
 
         // Check the combination of email and password, also check for activation status
-        if(!Auth::attempt($credentials)) {
+        if(!$token = auth('api')->attempt($credentials)) {
             return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => 'Wrong combination of email and password or email has not been verified'], AppResponse::HTTP_UNAUTHORIZED);
         }
 
-        $user = $request->user();
-        // Get access token
-        $tokenResult = $user->createToken('Personal Access Token');
-        $token = $tokenResult->token;
-        // Add 1 week duration if user choose remember_me
-        if ($request->remember_me)
-            $token->expires_at = Carbon::now()->addWeeks(1);
-        $token->save();
-
         // Prepare response data
-        $data = [
-            'access_token' => $tokenResult->accessToken,
-            'token_type' => 'Bearer',
-            'expires_at' => Carbon::parse(
-                $tokenResult->token->expires_at
-            )->toDateTimeString()
-        ];
+        $data = $this->respondWithToken($token);
 
         return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $data], AppResponse::HTTP_OK);
     }
@@ -205,9 +184,7 @@ class AuthController extends Controller
     */
     public function logout(Request $request)
     {
-        // We delete the token completely instead of revoking it (invalidating it)
-        $request->user()->token()->delete();
-        //$request->user()->token()->revoke();
+        auth('api')->logout();
 
         return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Successfully logged out'], AppResponse::HTTP_OK);
     }
@@ -576,5 +553,14 @@ class AuthController extends Controller
         $user->notify(new PasswordChangeSuccess());
 
         return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK);
+    }
+
+    protected function respondWithToken($token)
+    {
+        return [
+            'access_token' => $token,
+            'token_type'   => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60
+        ];
     }
 }
