@@ -117,12 +117,7 @@
                     "500": {
                         "description": "Server error"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/auth/getUser": {
@@ -140,12 +135,7 @@
                     "500": {
                         "description": "Server error"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/auth/register/activate/{token}": {
@@ -349,23 +339,7 @@
                     "500": {
                         "description": "Server error"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        }
-    },
-    "components": {
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "name": "bearerAuth",
-                "in": "header",
-                "bearerFormat": "JWT",
-                "scheme": "bearer"
+                }
             }
         }
     }
