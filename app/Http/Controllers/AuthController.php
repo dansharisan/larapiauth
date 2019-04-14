@@ -169,9 +169,6 @@ class AuthController extends Controller
     *         summary="Logout",
     *         description="Logout an user",
     *         operationId="logout",
-    *         security={
-    *           {"bearerAuth": {}}
-    *         },
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
@@ -196,9 +193,6 @@ class AuthController extends Controller
     *         summary="Get user",
     *         description="Retrieve information from current user",
     *         operationId="getUser",
-    *         security={
-    *           {"bearerAuth": {}}
-    *         },
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
@@ -475,9 +469,6 @@ class AuthController extends Controller
     *         summary="Change password",
     *         description="Change an user's password (requires current password) and send notification mail",
     *         operationId="changePassword",
-    *         security={
-    *           {"bearerAuth": {}}
-    *         },
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
