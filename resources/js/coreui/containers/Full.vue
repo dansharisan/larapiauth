@@ -46,7 +46,6 @@ export default {
     },
   },
   created () {
-      this.$store.dispatch('user/getUser')
   },
   mounted () {
     $('body').addClass('app sidebar-lg-show pace-done')

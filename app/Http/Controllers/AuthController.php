@@ -156,10 +156,10 @@ class AuthController extends Controller
             return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => 'Wrong combination of email and password or email has not been verified'], AppResponse::HTTP_UNAUTHORIZED);
         }
 
-        // Prepare response data
-        $data = $this->respondWithToken($token);
+        $user = auth('api')->user();
+        $data['roles'] = $user->getRoleNames();
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $data], AppResponse::HTTP_OK);
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $data], AppResponse::HTTP_OK)->withCookie('token', $token, config('jwt.ttl'), "/", null, false, true);
     }
 
     /**
@@ -211,9 +211,9 @@ class AuthController extends Controller
     */
     public function getUser(Request $request)
     {
-        $result = $request->user();
-        $result['roles'] = $result->getRoleNames();
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $request->user()], AppResponse::HTTP_OK);
+        $data = $request->user();
+        $data['roles'] = $data->getRoleNames();
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $data], AppResponse::HTTP_OK);
     }
 
     /**
@@ -558,7 +558,7 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         return [
-            'access_token' => $token,
+            'token' => $token,
             'token_type'   => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60
         ];

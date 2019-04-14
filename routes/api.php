@@ -21,9 +21,9 @@ Route::group([
     Route::post('register', 'AuthController@register');
     Route::get('register/activate/{token}', 'AuthController@activate');
 
-    // Requires Authorization: Bearer <access_token>
+    // Requires Authorization
     Route::group([
-        'middleware' => 'auth:api'
+        'middleware' => 'jwt.auth'
     ], function() {
         Route::get('logout', 'AuthController@logout');
         Route::get('getUser', 'AuthController@getUser');
