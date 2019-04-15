@@ -130,6 +130,7 @@ class AuthController extends Controller
     *                         property="password",
     *                         description="Password",
     *                         type="string",
+    *                         format="password"
     *                     ),
     *                 )
     *             )
@@ -157,9 +158,9 @@ class AuthController extends Controller
         }
 
         $user = auth('api')->user();
-        $data['roles'] = $user->getRoleNames();
+        $user['roles'] = $user->getRoleNames();
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $data], AppResponse::HTTP_OK)->withCookie('token', $token, config('jwt.ttl'), "/", null, false, true);
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK)->withCookie('token', $token, config('jwt.ttl'), "/", null, false, true);
     }
 
     /**
@@ -409,11 +410,13 @@ class AuthController extends Controller
     *                         property="password",
     *                         description="Password",
     *                         type="string",
+    *                         format="password"
     *                     ),
     *                     @OA\Property(
     *                         property="password_confirmation",
     *                         description="Confirm password",
     *                         type="string",
+    *                         format="password"
     *                     ),
     *                     @OA\Property(
     *                         property="token",
@@ -443,7 +446,7 @@ class AuthController extends Controller
             ['email', $request->email]
         ])->first();
         if (!$passwordReset) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "This password reset token is invalid"], AppResponse::HTTP_BAD_REQUEST);
+            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "Invalid input data"], AppResponse::HTTP_BAD_REQUEST);
         }
 
         $user = User::where('email', $passwordReset->email)->first();
@@ -495,16 +498,19 @@ class AuthController extends Controller
     *                         property="password",
     *                         description="Password",
     *                         type="string",
+    *                         format="password"
     *                     ),
     *                     @OA\Property(
     *                         property="new_password",
     *                         description="New password",
     *                         type="string",
+    *                         format="password"
     *                     ),
     *                     @OA\Property(
     *                         property="new_password_confirmation",
     *                         description="Confirm new password",
     *                         type="string",
+    *                         format="password"
     *                     ),
     *                 )
     *             )

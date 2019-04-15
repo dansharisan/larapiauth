@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000",
+            "url": "http://localhost:8000/",
             "description": "Default server"
         }
     ],
@@ -78,7 +78,8 @@
                                     },
                                     "password": {
                                         "description": "Password",
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password"
                                     }
                                 },
                                 "type": "object"
@@ -310,15 +311,18 @@
                                 "properties": {
                                     "password": {
                                         "description": "Password",
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password"
                                     },
                                     "new_password": {
                                         "description": "New password",
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password"
                                     },
                                     "new_password_confirmation": {
                                         "description": "Confirm new password",
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password"
                                     }
                                 },
                                 "type": "object"

@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "086ebc4028f41c6e1d9f912474b60a80",
@@ -1951,16 +1951,16 @@
         },
         {
             "name": "swagger-api/swagger-ui",
-            "version": "v3.22.0",
+            "version": "v3.22.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swagger-api/swagger-ui.git",
-                "reference": "99b899797ec7d10081febf0299ea7f0c90ad7632"
+                "reference": "c38bf85e34ee46b2ad399b25c4c73668dc0d7e1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/99b899797ec7d10081febf0299ea7f0c90ad7632",
-                "reference": "99b899797ec7d10081febf0299ea7f0c90ad7632",
+                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/c38bf85e34ee46b2ad399b25c4c73668dc0d7e1d",
+                "reference": "c38bf85e34ee46b2ad399b25c4c73668dc0d7e1d",
                 "shasum": ""
             },
             "type": "library",
@@ -2004,7 +2004,7 @@
                 "swagger",
                 "ui"
             ],
-            "time": "2019-03-23T08:21:22+00:00"
+            "time": "2019-04-13T01:40:36+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
