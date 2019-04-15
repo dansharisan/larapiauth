@@ -22,121 +22,133 @@ import store from '../store/index.js';
 import router from '../router';
 import { AuthUtils } from '../mixins/auth-utils.js';
 
-/*
-This will check to see if the user is authenticated or not.
-*/
-function requireAuth (to, from, next) {
-  if (window.localStorage.getItem('access_token')){
-    // Verify the stored access token
-    store.dispatch('user/getUser')
-    store.watch(store.getters['user/getUser'], n => {
-      if( store.get('user/userLoadStatus') == 2 ){
-        next()
-      }
-    })
-  } else {
-    next('/login')
-  }
+function requireNonAuth (to, from, next) {
+    if (store.get('user/user') && store.get('user/user').id) {
+        next('/userinfo')
+    } else {
+        if (store.get('user/userLoadStatus') == 3) {
+            next()
+        } else {
+            store.dispatch('user/getUser')
+            store.watch(store.getters['user/getUserLoadStatus'], n => {
+                if (store.get('user/userLoadStatus') == 2) {
+                    next('/userinfo')
+                } else if (store.get('user/userLoadStatus') == 3) {
+                    next()
+                }
+            })
+        }
+    }
 }
 
-function requireNonAuth (to, from, next) {
-  if ( !window.localStorage.getItem('access_token') ){
-    next()
-  } else {
-    router.go(-1)
-  }
+function requireAuth (to, from, next) {
+    if (store.get('user/user') && store.get('user/user').id) {
+        next()
+    } else {
+        if (store.get('user/userLoadStatus') == 3) {
+            next('/login')
+        } else {
+            store.dispatch('user/getUser')
+            store.watch(store.getters['user/getUserLoadStatus'], n => {
+                if (store.get('user/userLoadStatus') == 2) {
+                    next()
+                } else if (store.get('user/userLoadStatus') == 3) {
+                    next('/login')
+                }
+            })
+        }
+    }
 }
 
 function requireAdmin (to, from, next) {
-  if (window.localStorage.getItem('access_token')){
-    // Verify the stored access token
-    store.dispatch('user/getUser')
-    store.watch(store.getters['user/getUser'], n => {
-      if( store.get('user/userLoadStatus') == 2 && AuthUtils.methods.hasRole(store.get('user/user'), 'admin')){
+    if(store.get('user/user') && store.get('user/user').id && AuthUtils.methods.hasRole(store.get('user/user'), 'admin')) {
         next()
-      } else {
-        next('/403')
-      }
-    })
-  } else {
-    next('/login')
-  }
+    } else {
+        store.dispatch('user/getUser')
+        store.watch(store.getters['user/getUserLoadStatus'], n => {
+            if(store.get('user/userLoadStatus') == 2 && store.get('user/user') && store.get('user/user').id && AuthUtils.methods.hasRole(store.get('user/user'), 'admin')){
+                next()
+            } else {
+                next('/403')
+            }
+        })
+    }
 }
 
 Vue.use(Router)
 
 export default new Router({
-  mode           : 'history',
-  linkActiveClass: 'open active',
-  scrollBehavior : () => ({ y: 0 }),
-  routes         : [
-    {
-      path     : '/admin',
-      redirect : '/admin/dashboard',
-      name     : 'Home',
-      component: Full,
-      beforeEnter: requireAdmin,
-      children : [
+    mode           : 'history',
+    linkActiveClass: 'open active',
+    scrollBehavior : () => ({ y: 0 }),
+    routes         : [
         {
-          path     : 'dashboard',
-          name     : 'Dashboard',
-          component: Dashboard,
+            path     : '/admin',
+            redirect : '/admin/dashboard',
+            name     : 'Home',
+            component: Full,
+            beforeEnter: requireAdmin,
+            children : [
+                {
+                    path     : 'dashboard',
+                    name     : 'Dashboard',
+                    component: Dashboard,
+                },
+                {
+                    path     : 'users',
+                    name     : 'Users',
+                    component: Users,
+                },
+            ],
         },
         {
-          path     : 'users',
-          name     : 'Users',
-          component: Users,
+            path     : '/404',
+            name     : 'Page404',
+            component: Page404,
         },
-      ],
-    },
-    {
-      path     : '/404',
-      name     : 'Page404',
-      component: Page404,
-    },
-    {
-      path     : '/403',
-      name     : 'Page403',
-      component: Page403,
-    },
-    {
-      path     : '/500',
-      name     : 'Page500',
-      component: Page500,
-    },
-    {
-      path     : '/login',
-      name     : 'Login',
-      component: Login,
-      beforeEnter: requireNonAuth
-    },
-    {
-      path     : '/register',
-      name     : 'Register',
-      component: Register,
-      beforeEnter: requireNonAuth
-    },
-    {
-      path     : '/forgot-password',
-      name     : 'ForgotPassword',
-      component: ForgotPassword,
-      beforeEnter: requireNonAuth
-    },
-    {
-      path     : '/reset-password/:token',
-      name     : 'ResetPassword',
-      component: ResetPassword
-    },
-    {
-      path     : '/userinfo',
-      name     : 'UserInfo',
-      component: UserInfo,
-      beforeEnter: requireAuth
-    },
-    {
-      path     : '*',
-      name     : '404',
-      component: Page404,
-    },
-  ],
+        {
+            path     : '/403',
+            name     : 'Page403',
+            component: Page403,
+        },
+        {
+            path     : '/500',
+            name     : 'Page500',
+            component: Page500,
+        },
+        {
+            path     : '/login',
+            name     : 'Login',
+            component: Login,
+            beforeEnter: requireNonAuth
+        },
+        {
+            path     : '/register',
+            name     : 'Register',
+            component: Register,
+            beforeEnter: requireNonAuth
+        },
+        {
+            path     : '/forgot-password',
+            name     : 'ForgotPassword',
+            component: ForgotPassword,
+            beforeEnter: requireNonAuth
+        },
+        {
+            path     : '/reset-password/:token',
+            name     : 'ResetPassword',
+            component: ResetPassword
+        },
+        {
+            path     : '/userinfo',
+            name     : 'UserInfo',
+            component: UserInfo,
+            beforeEnter: requireAuth
+        },
+        {
+            path     : '*',
+            name     : '404',
+            component: Page404,
+        },
+    ],
 })

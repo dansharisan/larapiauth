@@ -130,12 +130,8 @@ class AuthController extends Controller
     *                         property="password",
     *                         description="Password",
     *                         type="string",
+    *                         format="password"
     *                     ),
-    *                     @OA\Property(
-    *                         property="remember_me",
-    *                         description="Remember me",
-    *                         type="boolean",
-    *                     )
     *                 )
     *             )
     *         )
@@ -147,7 +143,6 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email',
             'password' => 'required|string',
-            // 'remember_me' => 'boolean'
         ]);
         if ($validator->fails()) {
             return response()->json(['success' => AppResponse::STATUS_FAILURE, 'errors'=>$validator->errors()], AppResponse::HTTP_UNPROCESSABLE_ENTITY);
@@ -158,29 +153,14 @@ class AuthController extends Controller
         $credentials['deleted_at'] = null;
 
         // Check the combination of email and password, also check for activation status
-        if(!Auth::attempt($credentials)) {
+        if(!$token = auth('api')->attempt($credentials)) {
             return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => 'Wrong combination of email and password or email has not been verified'], AppResponse::HTTP_UNAUTHORIZED);
         }
 
-        $user = $request->user();
-        // Get access token
-        $tokenResult = $user->createToken('Personal Access Token');
-        $token = $tokenResult->token;
-        // Add 1 week duration if user choose remember_me
-        if ($request->remember_me)
-            $token->expires_at = Carbon::now()->addWeeks(1);
-        $token->save();
+        $user = auth('api')->user();
+        $user['roles'] = $user->getRoleNames();
 
-        // Prepare response data
-        $data = [
-            'access_token' => $tokenResult->accessToken,
-            'token_type' => 'Bearer',
-            'expires_at' => Carbon::parse(
-                $tokenResult->token->expires_at
-            )->toDateTimeString()
-        ];
-
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $data], AppResponse::HTTP_OK);
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK)->withCookie('token', $token, config('jwt.ttl'), "/", null, false, true);
     }
 
     /**
@@ -190,9 +170,6 @@ class AuthController extends Controller
     *         summary="Logout",
     *         description="Logout an user",
     *         operationId="logout",
-    *         security={
-    *           {"bearerAuth": {}}
-    *         },
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
@@ -205,9 +182,7 @@ class AuthController extends Controller
     */
     public function logout(Request $request)
     {
-        // We delete the token completely instead of revoking it (invalidating it)
-        $request->user()->token()->delete();
-        //$request->user()->token()->revoke();
+        auth('api')->logout();
 
         return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Successfully logged out'], AppResponse::HTTP_OK);
     }
@@ -219,9 +194,6 @@ class AuthController extends Controller
     *         summary="Get user",
     *         description="Retrieve information from current user",
     *         operationId="getUser",
-    *         security={
-    *           {"bearerAuth": {}}
-    *         },
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
@@ -234,9 +206,9 @@ class AuthController extends Controller
     */
     public function getUser(Request $request)
     {
-        $result = $request->user();
-        $result['roles'] = $result->getRoleNames();
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $request->user()], AppResponse::HTTP_OK);
+        $data = $request->user();
+        $data['roles'] = $data->getRoleNames();
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $data], AppResponse::HTTP_OK);
     }
 
     /**
@@ -438,11 +410,13 @@ class AuthController extends Controller
     *                         property="password",
     *                         description="Password",
     *                         type="string",
+    *                         format="password"
     *                     ),
     *                     @OA\Property(
     *                         property="password_confirmation",
     *                         description="Confirm password",
     *                         type="string",
+    *                         format="password"
     *                     ),
     *                     @OA\Property(
     *                         property="token",
@@ -472,7 +446,7 @@ class AuthController extends Controller
             ['email', $request->email]
         ])->first();
         if (!$passwordReset) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "This password reset token is invalid"], AppResponse::HTTP_BAD_REQUEST);
+            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "Invalid input data"], AppResponse::HTTP_BAD_REQUEST);
         }
 
         $user = User::where('email', $passwordReset->email)->first();
@@ -498,9 +472,6 @@ class AuthController extends Controller
     *         summary="Change password",
     *         description="Change an user's password (requires current password) and send notification mail",
     *         operationId="changePassword",
-    *         security={
-    *           {"bearerAuth": {}}
-    *         },
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
@@ -527,16 +498,19 @@ class AuthController extends Controller
     *                         property="password",
     *                         description="Password",
     *                         type="string",
+    *                         format="password"
     *                     ),
     *                     @OA\Property(
     *                         property="new_password",
     *                         description="New password",
     *                         type="string",
+    *                         format="password"
     *                     ),
     *                     @OA\Property(
     *                         property="new_password_confirmation",
     *                         description="Confirm new password",
     *                         type="string",
+    *                         format="password"
     *                     ),
     *                 )
     *             )
@@ -576,5 +550,14 @@ class AuthController extends Controller
         $user->notify(new PasswordChangeSuccess());
 
         return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK);
+    }
+
+    protected function respondWithToken($token)
+    {
+        return [
+            'token' => $token,
+            'token_type'   => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60
+        ];
     }
 }
