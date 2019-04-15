@@ -1,11 +1,11 @@
 import { defaultMutations } from 'vuex-easy-access'
 import { APP_CONFIG } from '../../../config.js'
 import UserAPI from '../../api/user.js'
+import AuthAPI from '../../api/auth.js'
 
 const state = {
-  user: {},
-  userLoadStatus: 0,
-  userUpdateStatus: 0
+    user: null,
+    userLoadStatus: 0
 }
 
 // add generate mutation vuex easy access
@@ -13,40 +13,54 @@ const state = {
 const mutations = { ...defaultMutations(state) }
 
 const getters = {
-  getUser: state => () => state.user
+    getUser: state => () => state.user,
+    getUserLoadStatus: state => () => state.userLoadStatus
 }
 
 const actions = {
-  getUser ({ commit }) {
-    commit('userLoadStatus', 1)
+    getUser ({ commit }) {
+        commit('userLoadStatus', 1)
 
-    UserAPI.getUser()
-    .then((response) => {
-      commit('userLoadStatus', 2)
-      commit('user', response.data.data)
-    })
-    .catch( function( e ) {
-      if (e.request && e.request.status && e.request.status == 401) {
-        // Load done
-        commit('userLoadStatus', 2)
-      } else {
-        // Load failed
-        commit('userLoadStatus', 3)
-      }
-      commit('user', {})
-    })
+        UserAPI.getUser()
+        .then((response) => {
+            commit('userLoadStatus', 2)
+            commit('user', response.data.data)
+        })
+        .catch( function( e ) {
+            commit('userLoadStatus', 3)
+            commit('user', {})
+        })
+    },
 
-    const instance = axios.create({
-      baseURL: APP_CONFIG.API_URL,
-      timeout: 1000,
-      headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('access_token')}
-    })
-  },
+    logout ({ commit }) {
+        commit('userLoadStatus', 0)
+        commit('user', null)
+    },
+
+    login ({ commit }, credential) {
+        commit('userLoadStatus', 1)
+
+        return new Promise((resolve, reject) => {
+            AuthAPI.getAccessToken(credential.email, credential.password)
+            .then((response) => {
+                commit('userLoadStatus', 2)
+                commit('user', response.data.data)
+                // Return successful response
+                resolve(response)
+            })
+            .catch((error) => {
+                commit('userLoadStatus', 3)
+                commit('user', {})
+                // Return error
+                reject(error)
+            })
+        })
+    }
 }
 
 export default {
-  state,
-  mutations,
-  actions,
-  getters
+    state,
+    mutations,
+    actions,
+    getters
 }

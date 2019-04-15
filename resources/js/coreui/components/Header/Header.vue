@@ -22,7 +22,7 @@
       <b-nav-item class="px-3" @click="goTo('/')">
         Home
       </b-nav-item>
-      <b-nav-item class="px-3" @click="goTo('/api/documentation')">
+      <b-nav-item class="px-3" @click="goTo('/api')">
         API Documentation
       </b-nav-item>
     </b-navbar-nav>

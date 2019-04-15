@@ -6,12 +6,8 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000",
-            "description": "Local server"
-        },
-        {
-            "url": "https://dev.project.com",
-            "description": "Dev server"
+            "url": "http://localhost:8000/",
+            "description": "Default server"
         }
     ],
     "paths": {
@@ -82,11 +78,8 @@
                                     },
                                     "password": {
                                         "description": "Password",
-                                        "type": "string"
-                                    },
-                                    "remember_me": {
-                                        "description": "Remember me",
-                                        "type": "boolean"
+                                        "type": "string",
+                                        "format": "password"
                                     }
                                 },
                                 "type": "object"
@@ -125,12 +118,7 @@
                     "500": {
                         "description": "Server error"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/auth/getUser": {
@@ -148,12 +136,7 @@
                     "500": {
                         "description": "Server error"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/auth/register/activate/{token}": {
@@ -328,15 +311,18 @@
                                 "properties": {
                                     "password": {
                                         "description": "Password",
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password"
                                     },
                                     "new_password": {
                                         "description": "New password",
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password"
                                     },
                                     "new_password_confirmation": {
                                         "description": "Confirm new password",
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password"
                                     }
                                 },
                                 "type": "object"
@@ -357,23 +343,7 @@
                     "500": {
                         "description": "Server error"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        }
-    },
-    "components": {
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "name": "bearerAuth",
-                "in": "header",
-                "bearerFormat": "JWT",
-                "scheme": "bearer"
+                }
             }
         }
     }

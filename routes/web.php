@@ -14,6 +14,10 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::group(['middleware' => 'web'], function () {
+    Route::get(\Config::get('l5-swagger.routes')['api'], '\L5Swagger\Http\Controllers\SwaggerController@api')->name('l5swagger.api');
+});
+
 Route::get('/{vue_capture?}', 'AppController@index')
     ->middleware(['speed'])
     ->where('vue_capture', '[\/\w\.\,\-]*');
