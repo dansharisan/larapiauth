@@ -39,3 +39,10 @@ Route::group([
         Route::post('password/reset', 'AuthController@resetPassword');
     });
 });
+
+Route::group([
+    'prefix' => 'users',
+    'middleware' => 'jwt.auth'
+], function() {
+    Route::get('/', 'UserController@index');
+});
