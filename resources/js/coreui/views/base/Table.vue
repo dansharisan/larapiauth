@@ -8,11 +8,11 @@
         :small="small"
         :fixed="fixed"
         :items="tableData.data"
-        :fields="tableData.fields"
+        :fields="fields"
         :current-page="tableData.current_page"
         :per-page="tableData.per_page"
         responsive="sm"
-        >
+       >
             <template slot="status" slot-scope="data" v-if="tableData.data.length > 0 && tableData.data[0].status">
                 <b-badge :variant="getBadge(data.item.status)">
                     {{ data.item.status }}
@@ -67,7 +67,16 @@ export default {
         },
         tableData: {
             type : Object,
-            default: false,
+            default: {},
+        },
+        fields: {
+            type : Array,
+            default: [],
+        },
+    },
+    data: () => {
+       return {
+
         }
     },
     methods: {
@@ -78,5 +87,27 @@ export default {
             : status === 'Banned' ? 'danger' : 'primary'
         },
     },
+    watch: {
+        'tableData.current_page': function (newVal, oldVal) {
+            var vueComponent = this
+            if (oldVal && newVal) {
+                this.tableData.loadStatus = 1
+                axios.get(this.tableData.path + '?page=' + newVal)
+                .then(response => {
+                    if (response.data && response.data.success) {
+                        vueComponent.tableData = response.data.data
+                        vueComponent.tableData.loadStatus = 2
+                        debugger
+                    } else {
+                        vueComponent.tableData.loadStatus = 3
+                    }
+                })
+                .catch(error => {
+                    // TODO: handle error
+                    vueComponent.tableData.loadStatus = 3
+                })
+            }
+        }
+    }
 }
 </script>

@@ -10,6 +10,7 @@
                 fixed
                 caption="Users"
                 :tableData="tableData"
+                :fields="fields"
                 />
             </b-col>
         </b-row>
@@ -24,7 +25,14 @@ export default {
     components: { cTable },
     data: function () {
         return {
-            tableData: {}
+            tableData: {},
+            fields: [
+                { key: 'id', label: 'ID' },
+                { key: 'email' },
+                { key: 'display_roles', label: 'Role(s)' },
+                { key: 'active', label: 'Status' },
+                { key: 'created_at', label: 'Registered' },
+            ]
         }
     },
     methods: {
@@ -36,15 +44,7 @@ export default {
         UserAPI.getUsers()
         .then(response => {
             if (response.data.success) {
-                let fields = [
-                                { key: 'id' },
-                                { key: 'email' },
-                                { key: 'role(s)' },
-                                { key: 'status' },
-                                { key: 'created_at' },
-                            ];
                 vueComponent.tableData = response.data.data
-                vueComponent.tableData.fields = fields;
                 vueComponent.tableData.loadStatus = 2
             } else {
                 vueComponent.tableData.loadStatus = 3

@@ -12,15 +12,14 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::paginate();
+        $users = User::paginate(2);
 
         for ($i=0; $i<count($users); $i++) {
             $roleArr = [];
             foreach ($users[$i]->getRoleNames() as $role) {
                 array_push($roleArr, RoleType::getKey($role));
             }
-            $users[$i]['role(s)'] = implode(", ", $roleArr);
-            $users[$i]['status'] = ActiveStatus::getKey($users[$i]['active']);
+            $users[$i]['display_roles'] = implode(", ", $roleArr);
         }
 
         return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $users], AppResponse::HTTP_OK);
