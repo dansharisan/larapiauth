@@ -26,13 +26,13 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => PermissionType::DELETE_USERS]);
 
         /* Roles */
-        $userRole = Role::create(['name' => RoleType::MEMBER]);
-        $modRole = Role::create(['name' => RoleType::MODERATOR]);
+        $userRole = Role::create(['name' => RoleType::Member]);
+        $modRole = Role::create(['name' => RoleType::Moderator]);
         $modRole->givePermissionTo([
             PermissionType::VIEW_USERS,
             PermissionType::CREATE_USERS,
             PermissionType::UPDATE_USERS
         ]);
-        $adminRole = Role::create(['name' => RoleType::ADMINISTRATOR]);
+        $adminRole = Role::create(['name' => RoleType::Administrator]);
     }
 }

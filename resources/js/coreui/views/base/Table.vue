@@ -19,7 +19,7 @@
                 </b-badge>
             </template>
         </b-table>
-        <p v-else class="text-center mb-0">Data load error!</p>
+        <p v-else class="text-center mb-0">Data load error.</p>
         <nav v-if="tableData.loadStatus == 2">
             <b-pagination
             v-model="tableData.current_page"
@@ -83,7 +83,6 @@ export default {
         getBadge (status) {
             return status === 'Active' ? 'success'
             : status === 'Inactive' ? 'secondary'
-            : status === 'Pending' ? 'warning'
             : status === 'Banned' ? 'danger' : 'primary'
         },
     },

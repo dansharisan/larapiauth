@@ -30,7 +30,7 @@ export default {
                 { key: 'id', label: 'ID' },
                 { key: 'email' },
                 { key: 'display_roles', label: 'Role(s)' },
-                { key: 'active', label: 'Status' },
+                { key: 'status', label: 'Status' },
                 { key: 'created_at', label: 'Registered' },
             ]
         }

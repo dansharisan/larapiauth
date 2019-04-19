@@ -263,11 +263,13 @@
                                     },
                                     "password": {
                                         "description": "Password",
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password"
                                     },
                                     "password_confirmation": {
                                         "description": "Confirm password",
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password"
                                     },
                                     "token": {
                                         "description": "Password reset token",

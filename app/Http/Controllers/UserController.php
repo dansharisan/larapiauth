@@ -20,6 +20,7 @@ class UserController extends Controller
                 array_push($roleArr, RoleType::getKey($role));
             }
             $users[$i]['display_roles'] = implode(", ", $roleArr);
+            $users[$i]['status'] = ActiveStatus::getKey($users[$i]['active']);
         }
 
         return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $users], AppResponse::HTTP_OK);
