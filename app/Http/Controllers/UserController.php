@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::paginate(2);
+        $users = User::paginate($request->query('per_page'));
 
         for ($i=0; $i<count($users); $i++) {
             $roleArr = [];

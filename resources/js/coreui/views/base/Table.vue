@@ -10,7 +10,7 @@
         :items="tableData.data"
         :fields="fields"
         :current-page="currentPage"
-        :per-page="tableData.per_page"
+        per-page=0
         responsive="sm"
         >
             <template slot="status" slot-scope="data" v-if="tableData.data.length > 0 && tableData.data[0].status">
