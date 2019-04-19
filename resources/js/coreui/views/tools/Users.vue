@@ -2,7 +2,7 @@
     <div class="animated fadeIn">
         <b-row>
             <b-col sm="12">
-                <c-table
+                <c-table @page_changed="updateTableData"
                 hover
                 striped
                 bordered
@@ -11,6 +11,7 @@
                 caption="Users"
                 :tableData="tableData"
                 :fields="fields"
+                :loadStatus="loadStatus"
                 />
             </b-col>
         </b-row>
@@ -32,27 +33,33 @@ export default {
                 { key: 'display_roles', label: 'Role(s)' },
                 { key: 'status', label: 'Status' },
                 { key: 'created_at', label: 'Registered' },
-            ]
+            ],
+            loadStatus: 0
         }
     },
     methods: {
+        updateTableData(newPage) {
+            this.getUsers(newPage)
+        },
+        getUsers(page = 1) {
+            var vm = this
+            vm.loadStatus = 1
+            UserAPI.getUsers(page)
+            .then(response => {
+                if (response.data.success) {
+                    vm.tableData = response.data.data
+                    vm.loadStatus = 2
+                } else {
+                    vm.loadStatus = 3
+                }
+            })
+            .catch(error => {
+                vm.loadStatus = 3
+            })
+        }
     },
     created () {
-        var vueComponent = this
-        // Start loading
-        vueComponent.tableData.loadStatus = 1
-        UserAPI.getUsers()
-        .then(response => {
-            if (response.data.success) {
-                vueComponent.tableData = response.data.data
-                vueComponent.tableData.loadStatus = 2
-            } else {
-                vueComponent.tableData.loadStatus = 3
-            }
-        })
-        .catch(error => {
-            vueComponent.tableData.loadStatus = 3
-        })
+        this.getUsers()
     },
 }
 </script>

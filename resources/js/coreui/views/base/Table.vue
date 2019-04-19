@@ -1,7 +1,7 @@
 <template>
     <b-card :header="caption" header-class="text-left" class="text-center">
-        <loading-stretch v-if="tableData.loadStatus==1"></loading-stretch>
-        <b-table v-else-if="tableData.loadStatus == 2"
+        <loading-stretch v-if="loadStatus==1"></loading-stretch>
+        <b-table v-else-if="loadStatus == 2"
         :hover="hover"
         :striped="striped"
         :bordered="bordered"
@@ -9,10 +9,10 @@
         :fixed="fixed"
         :items="tableData.data"
         :fields="fields"
-        :current-page="tableData.current_page"
+        :current-page="currentPage"
         :per-page="tableData.per_page"
         responsive="sm"
-       >
+        >
             <template slot="status" slot-scope="data" v-if="tableData.data.length > 0 && tableData.data[0].status">
                 <b-badge :variant="getBadge(data.item.status)">
                     {{ data.item.status }}
@@ -20,15 +20,16 @@
             </template>
         </b-table>
         <p v-else class="text-center mb-0">Data load error.</p>
-        <nav v-if="tableData.loadStatus == 2">
+        <nav v-if="loadStatus == 2">
             <b-pagination
-            v-model="tableData.current_page"
+            v-model="currentPage"
             :total-rows="tableData.total"
             :per-page="tableData.per_page"
             prev-text="Prev"
             next-text="Next"
             hide-goto-end-buttons
-            />
+            >
+            </b-pagination>
         </nav>
     </b-card>
 </template>
@@ -73,10 +74,15 @@ export default {
             type : Array,
             default: [],
         },
+        loadStatus: {
+            type: Number,
+            default: 0
+        }
     },
     data: () => {
        return {
-
+           currentPage: 1,
+           tableKey: 0
         }
     },
     methods: {
@@ -87,26 +93,11 @@ export default {
         },
     },
     watch: {
-        'tableData.current_page': function (newVal, oldVal) {
-            var vueComponent = this
-            if (oldVal && newVal) {
-                this.tableData.loadStatus = 1
-                axios.get(this.tableData.path + '?page=' + newVal)
-                .then(response => {
-                    if (response.data && response.data.success) {
-                        vueComponent.tableData = response.data.data
-                        vueComponent.tableData.loadStatus = 2
-                        debugger
-                    } else {
-                        vueComponent.tableData.loadStatus = 3
-                    }
-                })
-                .catch(error => {
-                    // TODO: handle error
-                    vueComponent.tableData.loadStatus = 3
-                })
+        currentPage: function (newVal, oldVal) {
+            if (oldVal) {
+                this.$emit('page_changed', newVal)
             }
         }
-    }
+    },
 }
 </script>
