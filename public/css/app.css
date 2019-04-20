@@ -22682,6 +22682,10 @@ hr.transparent {
   border-right-color: #536c79;
 }
 
+.btn-action {
+  width: 6em !important;
+}
+
 .spinner-container {
   align-items: center;
   display: flex;

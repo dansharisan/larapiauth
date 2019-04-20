@@ -33,8 +33,7 @@ export default {
                 { key: 'display_roles', label: 'Role(s)' },
                 { key: 'status', label: 'Status' },
                 { key: 'created_at', label: 'Registered' },
-                { key: 'created_at', label: 'Registered' },
-                'action'
+                { key: 'actions' }
             ],
             loadStatus: 0
         }
