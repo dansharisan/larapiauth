@@ -2,7 +2,7 @@
     <div class="animated fadeIn">
         <b-row>
             <b-col sm="12">
-                <c-table @page_changed="updateTableData"
+                <c-table @page_changed="updateTableDataWithPage" @per_page_changed="updateTableDataWithPerPage"
                 hover
                 striped
                 bordered
@@ -38,13 +38,16 @@ export default {
         }
     },
     methods: {
-        updateTableData(newPage) {
-            this.getUsers(newPage)
+        updateTableDataWithPage(newPage, perPage) {
+            this.getUsers(newPage, perPage)
         },
-        getUsers(page = 1) {
+        updateTableDataWithPerPage(perPage) {
+            this.getUsers(1, perPage)
+        },
+        getUsers(page = 1, perPage = 25) {
             var vm = this
             vm.loadStatus = 1
-            UserAPI.getUsers(page)
+            UserAPI.getUsers(page, perPage)
             .then(response => {
                 if (response.data.success) {
                     vm.tableData = response.data.data
@@ -59,7 +62,8 @@ export default {
         }
     },
     created () {
-        this.getUsers()
+        let perPage = window.localStorage.getItem('per_page') || 25
+        this.getUsers(1, perPage)
     },
 }
 </script>

@@ -13,7 +13,7 @@ export default {
     GET /api/users
     To get user information
     */
-    getUsers: function(page = 1) {
-        return axios.get(APP_CONFIG.API_URL + '/users?page=' + page);
+    getUsers: function(page = 1, perPage = 25) {
+        return axios.get(APP_CONFIG.API_URL + '/users?page=' + page + '&per_page=' + perPage);
     },
 }
