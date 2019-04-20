@@ -7,7 +7,6 @@
                 striped
                 bordered
                 small
-                fixed
                 caption="Users"
                 :tableData="tableData"
                 :fields="fields"
@@ -29,10 +28,13 @@ export default {
             tableData: {},
             fields: [
                 { key: 'id', label: 'ID' },
+                // { key: 'id', label: 'ID', thClass: 'd-none', tdClass: 'd-none' },  -> this is to hide this column
                 { key: 'email' },
                 { key: 'display_roles', label: 'Role(s)' },
                 { key: 'status', label: 'Status' },
                 { key: 'created_at', label: 'Registered' },
+                { key: 'created_at', label: 'Registered' },
+                'action'
             ],
             loadStatus: 0
         }

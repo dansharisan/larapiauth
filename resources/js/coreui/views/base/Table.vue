@@ -2,21 +2,30 @@
     <b-card :header="caption" header-class="text-left" class="text-center">
         <loading-stretch v-if="loadStatus==1"></loading-stretch>
         <div v-else-if="loadStatus == 2">
-            <b-input-group class="mb-3">
-              <b-form-select
-                @input="onChangePerPage"
-                v-model="perPage"
-                id="per_page"
-                :plain="false"
-                :options="[{ text: '15', value: 15}, { text: '30', value: 30}, { text: '50', value: 50}, { text: '100', value: 100}]"
-                size="xs"
-                value="Please select"
-                class="col-1"
-              />
-              <b-input-group-append>
-                  <b-input-group-text>items per page</b-input-group-text>
-              </b-input-group-append>
-            </b-input-group>
+            <div class="row justify-content-between">
+                <div class="col-4">
+                    <b-input-group class="mb-3 input-group-sm">
+                      <b-form-select
+                        @input="onChangePerPage"
+                        v-model="perPage"
+                        id="per_page"
+                        :plain="false"
+                        :options="[{ text: '15', value: 15}, { text: '30', value: 30}, { text: '50', value: 50}]"
+                        size="xs"
+                        value="Please select"
+                        class="col-2"
+                      />
+                      <b-input-group-append>
+                          <b-input-group-text>items per page</b-input-group-text>
+                      </b-input-group-append>
+                    </b-input-group>
+                </div>
+                <div class="col-2 text-right">
+                    <b-button size="sm" variant="primary" @click="createItem()">
+                        <i class="fa fa-file-o text-white" aria-hidden="true"></i> <span class="text-white">Create</span>
+                    </b-button>
+                </div>
+            </div>
 
             <b-table
             :hover="hover"
@@ -35,6 +44,20 @@
                         {{ data.item.status }}
                     </b-badge>
                 </template>
+                <template slot="action" slot-scope="row">
+                    <b-button size="sm" variant="warning" @click="editItem(row.item)" class="mr-1">
+                        <i class="fa fa-pencil-square-o text-white" aria-hidden="true"></i> <span class="text-white">Edit</span>
+                    </b-button>
+                    <b-button size="sm" variant="danger" @click="deleteItem(row.item)" class="mr-1">
+                        <i class="fa fa-trash-o text-white" aria-hidden="true"></i> <span class="text-white">Delete</span>
+                    </b-button>
+                    <b-button size="sm" variant="success" @click="unbanItem(row.item)" class="mr-1">
+                        <i class="fa fa-unlock text-white" aria-hidden="true"></i> <span class="text-white">Unban</span>
+                    </b-button>
+                    <b-button size="sm" variant="danger" @click="banItem(row.item)" class="mr-1">
+                        <i class="fa fa-lock text-white" aria-hidden="true"></i> <span class="text-white">Ban</span>
+                    </b-button>
+                </template>
             </b-table>
         </div>
         <p v-else class="text-center mb-0">Data load error.</p>
@@ -47,6 +70,7 @@
             next-text="Next"
             hide-goto-end-buttons
             class="mb-0"
+            size="sm"
             >
             </b-pagination>
         </nav>
@@ -105,6 +129,21 @@ export default {
         }
     },
     methods: {
+        createItem () {
+            alert('TODO: create item')
+        },
+        editItem (row) {
+            alert('TODO: edit item')
+        },
+        deleteItem (row) {
+            alert('TODO: delete item')
+        },
+        banItem (row) {
+            alert('TODO: ban item')
+        },
+        unbanItem (row) {
+            alert('TODO: unban item')
+        },
         getBadge (status) {
             return status === 'Active' ? 'success'
             : status === 'Inactive' ? 'secondary'
