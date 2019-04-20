@@ -59,16 +59,16 @@
                     </b-badge>
                 </template>
                 <template slot="actions" slot-scope="row">
-                    <b-button size="sm" class="btn-action mr-1" variant="warning" @click="editItem(row.item)">
+                    <b-button size="sm" class="btn-action" variant="warning" @click="editItem(row.item)">
                         <i class="fa fa-pencil-square-o text-white" aria-hidden="true"></i> <span class="text-white">Edit</span>
                     </b-button>
-                    <b-button size="sm" class="btn-action mr-1" variant="danger" @click="deleteItem(row.item)">
+                    <b-button size="sm" class="btn-action" variant="danger" @click="deleteItem(row.item)">
                         <i class="fa fa-trash-o text-white" aria-hidden="true"></i> <span class="text-white">Delete</span>
                     </b-button>
-                    <b-button size="sm" class="btn-action mr-1" variant="success" @click="unbanItem(row.item)" v-if="row.item.status == 'Banned'">
+                    <b-button size="sm" class="btn-action" variant="success" @click="unbanItem(row.item)" v-if="row.item.status == 'Banned'">
                         <i class="fa fa-unlock text-white" aria-hidden="true"></i> <span class="text-white">Unban</span>
                     </b-button>
-                    <b-button size="sm" class="btn-action mr-1" variant="danger" @click="banItem(row.item)" v-if="row.item.status != 'Banned'">
+                    <b-button size="sm" class="btn-action" variant="danger" @click="banItem(row.item)" v-if="row.item.status != 'Banned'">
                         <i class="fa fa-lock text-white" aria-hidden="true"></i> <span class="text-white">Ban</span>
                     </b-button>
                 </template>
