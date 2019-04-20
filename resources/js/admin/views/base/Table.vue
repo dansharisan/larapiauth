@@ -21,6 +21,9 @@
                     </b-input-group>
                 </div>
                 <div class="col-2 text-right">
+                    <b-button size="sm" class="btn-action" variant="danger" @click="deleteItems()" v-if="hasChecked">
+                        <i class="fa fa-remove text-white" aria-hidden="true"></i> <span class="text-white">Delete</span>
+                    </b-button>
                     <b-button size="sm" class="btn-action" variant="primary" @click="createItem()">
                         <i class="fa fa-file-o text-white" aria-hidden="true"></i> <span class="text-white">Create</span>
                     </b-button>
@@ -39,9 +42,20 @@
             per-page=0
             responsive="sm"
             >
-                <template slot="status" slot-scope="data" v-if="tableData.data.length > 0 && tableData.data[0].status">
-                    <b-badge :variant="getBadge(data.item.status)">
-                        {{ data.item.status }}
+                <template slot="checkbox" slot-scope="row">
+                    <b-form-checkbox
+                      :id="'checkbox-item-' + row.item.id"
+                      :name="'checkbox-item-' + row.item.id"
+                      class="checkbox-item"
+                      @input="selectItem(row)"
+                      value="checked"
+                      unchecked-value="unchecked"
+                    >
+                    </b-form-checkbox>
+                </template>
+                <template slot="status" slot-scope="row" v-if="tableData.data.length > 0 && tableData.data[0].status">
+                    <b-badge :variant="getBadge(row.item.status)">
+                        {{ row.item.status }}
                     </b-badge>
                 </template>
                 <template slot="actions" slot-scope="row">
@@ -121,10 +135,18 @@ export default {
     data: () => {
         return {
             currentPage: 1,
-            perPage: window.localStorage.getItem('per_page') || 15
+            perPage: window.localStorage.getItem('per_page') || 15,
+            hasChecked: false
         }
     },
     methods: {
+        selectItem (row) {
+            if ($('table .checkbox-item input').filter(':checked').length > 0) {
+                this.hasChecked = true
+            } else {
+                this.hasChecked = false
+            }
+        },
         createItem () {
             alert('TODO: create item')
         },
@@ -133,6 +155,9 @@ export default {
         },
         deleteItem (row) {
             alert('TODO: delete item')
+        },
+        deleteItems (row) {
+            alert('TODO: delete items')
         },
         banItem (row) {
             alert('TODO: ban item')

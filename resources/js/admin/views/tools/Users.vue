@@ -27,6 +27,7 @@ export default {
         return {
             tableData: {},
             fields: [
+                { key: 'checkbox', label: ' ' },
                 { key: 'id', label: 'ID' },
                 // { key: 'id', label: 'ID', thClass: 'd-none', tdClass: 'd-none' },  -> this is to hide this column
                 { key: 'email' },
