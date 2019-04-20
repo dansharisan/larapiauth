@@ -5,4 +5,4 @@
  */
 
 import './bootstrap'
-import './coreui/main.js'
+import './admin/main.js'
