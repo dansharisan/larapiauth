@@ -64,7 +64,7 @@
               </b-input-group>
               <b-row>
                 <b-col cols="6" v-if="findTokenRequest.status==2 && this.resetPasswordRequest.status != 2">
-                  <loading-stretch v-if="resetPasswordRequest.status==1"></loading-stretch>
+                  <b-loading v-if="resetPasswordRequest.status==1"></b-loading>
                   <b-button
                   variant="primary"
                   class="px-4"
@@ -102,15 +102,11 @@
 </template>
 
 <script>
-import LoadingStretch from 'vue-loading-spinner/src/components/Stretch.vue'
 import { required, sameAs } from 'validators'
 import AuthAPI from '../../api/auth.js'
 
 export default {
   name: 'ResetPassword',
-  components: {
-    LoadingStretch
-  },
   data () {
     return {
       form: {

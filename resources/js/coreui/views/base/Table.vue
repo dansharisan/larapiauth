@@ -1,6 +1,6 @@
 <template>
     <b-card :header="caption" header-class="text-left" class="text-center">
-        <loading-stretch v-if="loadStatus==1"></loading-stretch>
+        <b-loading v-if="loadStatus==1"></b-loading>
         <div v-else-if="loadStatus == 2">
             <div class="row justify-content-between">
                 <div class="col-4">
@@ -78,12 +78,8 @@
 </template>
 
 <script>
-import LoadingStretch from 'vue-loading-spinner/src/components/Stretch.vue'
 export default {
     name : 'cTable',
-    components: {
-        LoadingStretch
-    },
     props: {
         caption: {
             type   : String,

@@ -34,7 +34,7 @@
               </b-input-group>
               <b-row>
                 <b-col cols="6">
-                  <loading-stretch v-if="request.status==1"></loading-stretch>
+                  <loading v-if="request.status==1"></loading>
                   <b-button
                   v-else
                   variant="primary"
@@ -70,15 +70,11 @@
 </template>
 
 <script>
-import LoadingStretch from 'vue-loading-spinner/src/components/Stretch.vue'
 import { required, email } from 'validators'
 import AuthAPI from '../../api/auth.js'
 
 export default {
   name: 'ForgotPassword',
-  components: {
-    LoadingStretch
-  },
   data () {
     return {
       form: {
