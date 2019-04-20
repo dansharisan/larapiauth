@@ -68,8 +68,10 @@ function requireAdmin (to, from, next) {
         store.watch(store.getters['user/getUserLoadStatus'], n => {
             if(store.get('user/userLoadStatus') == 2 && store.get('user/user') && store.get('user/user').id && AuthUtils.methods.hasRole(store.get('user/user'), 'admin')){
                 next()
-            } else {
+            } else if (store.get('user/userLoadStatus') == 2 && store.get('user/user') && store.get('user/user').id && !AuthUtils.methods.hasRole(store.get('user/user'), 'admin')){
                 next('/403')
+            } else {
+                next('/login')
             }
         })
     }

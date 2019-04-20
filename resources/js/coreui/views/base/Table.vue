@@ -8,7 +8,7 @@
                 v-model="perPage"
                 id="per_page"
                 :plain="false"
-                :options="[{ text: '25', value: 25}, { text: '50', value: 50}, { text: '100', value: 100}]"
+                :options="[{ text: '15', value: 15}, { text: '30', value: 30}, { text: '50', value: 50}, { text: '100', value: 100}]"
                 size="xs"
                 value="Please select"
                 class="col-1"
@@ -101,7 +101,7 @@ export default {
     data: () => {
         return {
             currentPage: 1,
-            perPage: window.localStorage.getItem('per_page') || 25
+            perPage: window.localStorage.getItem('per_page') || 15
         }
     },
     methods: {

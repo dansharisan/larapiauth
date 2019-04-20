@@ -13,8 +13,11 @@
             <p class="text-muted">
               You're not authorized to access this page.
             </p>
+            <button type="button" class="btn px-0 btn-link" @click="goToHome()">
+              Back to Home
+            </button>
           </div>
-          <b-input-group>
+          <!-- <b-input-group>
             <b-input-group-prepend>
               <b-input-group-text>
                 <i class="fa fa-search" />
@@ -32,7 +35,7 @@
                 Search
               </b-button>
             </b-input-group-append>
-          </b-input-group>
+          </b-input-group> -->
         </b-col>
       </b-row>
     </div>
@@ -40,5 +43,12 @@
 </template>
 
 <script>
-export default { name: 'Page404' }
+export default {
+    name: 'Page403',
+    methods: {
+        goToHome() {
+            window.location.href = "/"
+        },
+    }
+}
 </script>

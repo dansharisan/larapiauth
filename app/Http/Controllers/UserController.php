@@ -10,6 +10,41 @@ use App\Enums\RoleType;
 
 class UserController extends Controller
 {
+    /**
+    * @OA\Get(
+    *         path="/api/users",
+    *         tags={"Users"},
+    *         summary="Get users",
+    *         description="Get list of users",
+    *         operationId="user-list",
+    *         @OA\Parameter(
+    *             name="page",
+    *             in="query",
+    *             description="Current page",
+    *             required=false,
+    *             @OA\Schema(
+    *                 type="integer",
+    *             )
+    *         ),
+    *         @OA\Parameter(
+    *             name="per_page",
+    *             in="query",
+    *             description="Items per page",
+    *             required=false,
+    *             @OA\Schema(
+    *                 type="integer",
+    *             )
+    *         ),
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    * )
+    */
     public function index(Request $request)
     {
         $users = User::paginate($request->query('per_page'));

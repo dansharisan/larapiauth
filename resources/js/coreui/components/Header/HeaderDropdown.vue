@@ -13,7 +13,7 @@
     <strong>Account</strong>
 </b-dropdown-header>
 <b-dropdown-item @click="logout()">
-    <i class="fa fa-lock" /> Logout
+    <i class="fa fa-sign-out" /> Logout
 </b-dropdown-item>
 </b-nav-item-dropdown>
 </template>
