@@ -18,24 +18,18 @@ export default {
     },
 
     /*
-    POST /api/users/ban
-    To get user information
+    PATCH /api/users/{id}/ban
+    To ban an user
     */
     banUser: function(userId) {
-        return axios.post(APP_CONFIG.API_URL + '/users/ban',
-        {
-            user_id: userId,
-        });
+        return axios.patch(APP_CONFIG.API_URL + '/users/' + userId +'/ban');
     },
 
     /*
-    POST /api/users/unban
-    To get user information
+    PATCH /api/users/{id}/unban
+    To unban an user
     */
     unbanUser: function(userId) {
-        return axios.post(APP_CONFIG.API_URL + '/users/unban',
-        {
-            user_id: userId,
-        });
+        return axios.patch(APP_CONFIG.API_URL + '/users/' + userId + '/unban');
     },
 }

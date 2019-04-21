@@ -385,6 +385,64 @@
                     }
                 }
             }
+        },
+        "/api/users/{id}/ban": {
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Ban an user",
+                "description": "Ban an user",
+                "operationId": "ban-user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}/unban": {
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Unban an user",
+                "description": "Unban an user",
+                "operationId": "unban-user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
         }
     }
 }

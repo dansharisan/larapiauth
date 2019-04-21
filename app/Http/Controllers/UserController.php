@@ -62,8 +62,8 @@ class UserController extends Controller
     }
 
     /**
-    * @OA\Post(
-    *         path="/api/users/ban",
+    * @OA\Patch(
+    *         path="/api/users/{id}/ban",
     *         tags={"Users"},
     *         summary="Ban an user",
     *         description="Ban an user",
@@ -76,28 +76,22 @@ class UserController extends Controller
     *             response=500,
     *             description="Server error"
     *         ),
-    *         @OA\RequestBody(
+    *         @OA\Parameter(
+    *             name="id",
+    *             in="path",
+    *             description="User ID",
     *             required=true,
-    *             @OA\MediaType(
-    *                 mediaType="application/x-www-form-urlencoded",
-    *                 @OA\Schema(
-    *                     type="object",
-    *                     @OA\Property(
-    *                         property="id",
-    *                         description="User ID",
-    *                         type="integer",
-    *                     )
-    *                 )
+    *             @OA\Schema(
+    *                 type="integer",
     *             )
-    *         )
+    *         ),
     * )
     */
-    public function ban(Request $request)
+    public function ban($id)
     {
-        $userId = $request->input('user_id');
         // Check for data validity
-        $user = User::find($userId);
-        if (!$userId || empty($user)) {
+        $user = User::find($id);
+        if (!$id || empty($user)) {
             return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "User ID is invalid."], AppResponse::HTTP_BAD_REQUEST);
         }
         // Update the data
@@ -108,8 +102,8 @@ class UserController extends Controller
     }
 
     /**
-    * @OA\Post(
-    *         path="/api/users/unban",
+    * @OA\Patch(
+    *         path="/api/users/{id}/unban",
     *         tags={"Users"},
     *         summary="Unban an user",
     *         description="Unban an user",
@@ -122,28 +116,22 @@ class UserController extends Controller
     *             response=500,
     *             description="Server error"
     *         ),
-    *         @OA\RequestBody(
+    *         @OA\Parameter(
+    *             name="id",
+    *             in="path",
+    *             description="User ID",
     *             required=true,
-    *             @OA\MediaType(
-    *                 mediaType="application/x-www-form-urlencoded",
-    *                 @OA\Schema(
-    *                     type="object",
-    *                     @OA\Property(
-    *                         property="id",
-    *                         description="User ID",
-    *                         type="integer",
-    *                     )
-    *                 )
+    *             @OA\Schema(
+    *                 type="integer",
     *             )
-    *         )
+    *         ),
     * )
     */
-    public function unban(Request $request)
+    public function unban($id)
     {
-        $userId = $request->input('user_id');
         // Check for data validity
-        $user = User::find($userId);
-        if (!$userId || empty($user)) {
+        $user = User::find($id);
+        if (!$id || empty($user)) {
             return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "User ID is invalid."], AppResponse::HTTP_BAD_REQUEST);
         }
         // Update the data

@@ -46,6 +46,6 @@ Route::group([
     'middleware' => 'jwt.auth'
 ], function() {
     Route::get('/', 'UserController@index');
-    Route::post('/ban', 'UserController@ban');
-    Route::post('/unban', 'UserController@unban');
+    Route::patch('/{id}/ban', 'UserController@ban');
+    Route::patch('/{id}/unban', 'UserController@unban');
 });
