@@ -15,10 +15,10 @@
         "lodash": "^4.17.5",
         "popper.js": "^1.15.0",
         "resolve-url-loader": "^2.3.1",
-        "sass": "^1.15.2",
+        "sass": "^1.19.0",
         "sass-loader": "^7.1.0",
         "vue-template-compiler": "^2.6.10",
-        "webpackbar": "^3.1.5"
+        "webpackbar": "^3.2.0"
     },
     "dependencies": {
         "animate.css": "^3.7.0",
@@ -36,7 +36,8 @@
         "simple-line-icons": "^2.4.1",
         "vue": "^2.6.8",
         "vue-chartjs": "^3.4.0",
-        "vue-router": "^3.0.2",
+        "vue-router": "^3.0.6",
+        "vue-snotify": "^3.2.1",
         "vue-sweetalert2": "^1.6.4",
         "vuejs-datepicker": "^1.5.4",
         "vuelidate": "^0.7.4",

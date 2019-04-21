@@ -5,6 +5,7 @@ import BootstrapVue from 'bootstrap-vue'
 import Datepicker from 'vuejs-datepicker'
 import { id } from 'vuejs-datepicker/dist/locale'
 import Sweetalert from 'vue-sweetalert2'
+import Snotify, { SnotifyPosition } from 'vue-snotify'
 import Vuelidate from 'vuelidate'
 import Loading from './components/Loading'
 import Select2 from './components/Select'
@@ -12,8 +13,19 @@ import App from './App'
 import router from './router'
 import store from './store'
 
+const snotifyOptions = {
+    toast: {
+        position: SnotifyPosition.rightBottom,
+        timeout: 1500,
+        showProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true
+  }
+}
+
 Vue.use(BootstrapVue)
 Vue.use(Sweetalert)
+Vue.use(Snotify, snotifyOptions)
 Vue.use(Vuelidate)
 
 Vue.filter('state', (value, dirtyOnly = true) => {
