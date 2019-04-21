@@ -33,11 +33,11 @@ export default {
     },
 
     /*
-    POST /api/auth/password/reset
+    PATCH /api/auth/password/reset
     Reset password
     */
     resetPassword: function(email, password, password_confirmation, token) {
-        return axios.post(APP_CONFIG.API_URL + '/auth/password/reset',
+        return axios.patch(APP_CONFIG.API_URL + '/auth/password/reset',
         {
             email: email,
             password: password,

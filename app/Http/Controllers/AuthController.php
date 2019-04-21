@@ -373,7 +373,7 @@ class AuthController extends Controller
     }
 
     /**
-    * @OA\Post(
+    * @OA\Patch(
     *         path="/api/auth/password/reset",
     *         tags={"Authentication"},
     *         summary="Reset password",
@@ -466,7 +466,7 @@ class AuthController extends Controller
     }
 
     /**
-    * @OA\Post(
+    * @OA\Patch(
     *         path="/api/auth/password/change",
     *         tags={"Authentication"},
     *         summary="Change password",
