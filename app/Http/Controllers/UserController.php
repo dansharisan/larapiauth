@@ -183,4 +183,54 @@ class UserController extends Controller
 
         return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Deleted user successfully.'], AppResponse::HTTP_OK);
     }
+
+    /**
+    * @OA\Post(
+    *         path="/api/users/collection:batchDelete",
+    *         tags={"Users"},
+    *         summary="Delete selected users",
+    *         description="Delete selected users",
+    *         operationId="delete-user-batch",
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=422,
+    *             description="Invalid input"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    *         @OA\RequestBody(
+    *             required=true,
+    *             @OA\MediaType(
+    *                 mediaType="application/x-www-form-urlencoded",
+    *                 @OA\Schema(
+    *                     type="array",
+    *                      @OA\Property(
+    *                         property="ids",
+    *                         description="Users' IDs",
+    *                         type="string",
+    *                         format="password"
+    *                     ),
+    *                 )
+    *             )
+    *         )
+    * )
+    */
+    public function batchDelete(Request $request)
+    {
+        // Check for data validity
+        $ids = $request->input('ids');
+        if (!is_array($ids) || count($ids) == 0) {
+            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => 'Invalid data.'], AppResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Delete selected users
+        User::whereIn('id', $ids)->delete();
+
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Deleted users successfully.'], AppResponse::HTTP_OK);
+    }
 }

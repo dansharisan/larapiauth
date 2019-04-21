@@ -40,4 +40,15 @@ export default {
     deleteUser: function(userId) {
         return axios.delete(APP_CONFIG.API_URL + '/users/' + userId);
     },
+
+    /*
+    POST /api/users/collection:batchDelete
+    To delete a selected collection of users
+    */
+    deleteUsers: function(userIds) {
+        return axios.post(APP_CONFIG.API_URL + '/users/collection:batchDelete',
+        {
+            ids: userIds,
+        });
+    },
 }

@@ -16,7 +16,7 @@ import store from './store'
 const snotifyOptions = {
     toast: {
         position: SnotifyPosition.rightBottom,
-        timeout: 1500,
+        timeout: 1000,
         showProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true

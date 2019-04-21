@@ -46,6 +46,7 @@
                     <b-form-checkbox
                       :id="'checkbox-item-' + row.item.id"
                       :name="'checkbox-item-' + row.item.id"
+                      :data-id="row.item.id"
                       class="checkbox-item"
                       @input="selectItem(row.item)"
                       value="checked"
@@ -155,8 +156,8 @@ export default {
         },
         deleteItem (item) {
             this.$swal({
-                title: 'You sure to delete this user?',
-                text: "This action cannot be undone.",
+                title: 'You sure to delete this item?',
+                text: "This is a soft delete mechanism. After deleting, data will no longer show here but still be remained in DB.",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#f86c6b',
@@ -168,8 +169,28 @@ export default {
                 }
             })
         },
-        deleteItems (item) {
-            alert('TODO: delete items')
+        deleteItems () {
+            this.$swal({
+                title: 'You sure to delete these items?',
+                text: "This is a soft delete mechanism. After deleting, data will no longer show here but still be remained in DB.",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#f86c6b',
+                cancelButtonColor: '#a4b7c1',
+                confirmButtonText: 'Delete'
+            }).then((result) => {
+                if (result.value) {
+                    // Gather items' ids
+                    var itemIds = [];
+                    $('table .checkbox-item input').filter(':checked').each(function (index) {
+                        let id = $(this).parent('div').data('id');
+                        itemIds.push(id)
+                    })
+
+                    this.$emit('delete_items', itemIds, this.currentPage, this.perPage)
+                }
+            })
+
         },
         banItem (item) {
             this.$swal({

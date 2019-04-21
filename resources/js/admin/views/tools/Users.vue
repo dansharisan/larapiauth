@@ -9,6 +9,7 @@
                 @ban_item="banUser"
                 @unban_item="unbanUser"
                 @delete_item="deleteUser"
+                @delete_items="deleteUsers"
                 hover
                 striped
                 bordered
@@ -51,6 +52,26 @@ export default {
         },
         updateTableDataWithPerPage(perPage) {
             this.getUsers(1, perPage)
+        },
+        deleteUsers(userIds, currentPage, perPage) {
+            var vm = this
+            vm.loadStatus = 1
+            UserAPI.deleteUsers(userIds)
+            .then(response => {
+                if (response.data.success) {
+                    vm.getUsers(currentPage, perPage)
+                    vm.$snotify.success(response.data.message)
+                } else {
+                    vm.loadStatus = 3
+                    vm.$snotify.error(response.data.message)
+                }
+            })
+            .catch(error => {
+                vm.loadStatus = 3
+                if (error && error.response && error.response.data && error.response.data.message) {
+                    vm.$snotify.error(error.response.data.message)
+                }
+            })
         },
         deleteUser(userId, currentPage, perPage) {
             var vm = this
