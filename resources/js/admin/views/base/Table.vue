@@ -47,7 +47,7 @@
                       :id="'checkbox-item-' + row.item.id"
                       :name="'checkbox-item-' + row.item.id"
                       class="checkbox-item"
-                      @input="selectItem(row)"
+                      @input="selectItem(row.item)"
                       value="checked"
                       unchecked-value="unchecked"
                     >
@@ -140,7 +140,7 @@ export default {
         }
     },
     methods: {
-        selectItem (row) {
+        selectItem (item) {
             if ($('table .checkbox-item input').filter(':checked').length > 0) {
                 this.hasChecked = true
             } else {
@@ -150,20 +150,44 @@ export default {
         createItem () {
             alert('TODO: create item')
         },
-        editItem (row) {
+        editItem (item) {
             alert('TODO: edit item')
         },
-        deleteItem (row) {
+        deleteItem (item) {
             alert('TODO: delete item')
         },
-        deleteItems (row) {
+        deleteItems (item) {
             alert('TODO: delete items')
         },
-        banItem (row) {
-            alert('TODO: ban item')
+        banItem (item) {
+            this.$swal({
+                title: 'You sure to ban this user?',
+                text: "Banned users will not be able to login until you unban them.",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#f86c6b',
+                cancelButtonColor: '#a4b7c1',
+                confirmButtonText: 'Yes, ban him/her!'
+            }).then((result) => {
+                if (result.value) {
+                    this.$emit('ban_item', item.id, this.currentPage, this.perPage)
+                }
+            })
         },
-        unbanItem (row) {
-            alert('TODO: unban item')
+        unbanItem (item) {
+            this.$swal({
+                title: 'You sure to unban this user?',
+                text: "This user will be able to login again after being unbanned.",
+                type: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#4dbd74',
+                cancelButtonColor: '#a4b7c1',
+                confirmButtonText: 'Yes, unban him/her.'
+            }).then((result) => {
+                if (result.value) {
+                    this.$emit('unban_item', item.id, this.currentPage, this.perPage)
+                }
+            })
         },
         getBadge (status) {
             return status === 'Active' ? 'success'

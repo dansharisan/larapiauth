@@ -60,4 +60,100 @@ class UserController extends Controller
 
         return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $users], AppResponse::HTTP_OK);
     }
+
+    /**
+    * @OA\Post(
+    *         path="/api/users/ban",
+    *         tags={"Users"},
+    *         summary="Ban an user",
+    *         description="Ban an user",
+    *         operationId="ban-user",
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    *         @OA\RequestBody(
+    *             required=true,
+    *             @OA\MediaType(
+    *                 mediaType="application/x-www-form-urlencoded",
+    *                 @OA\Schema(
+    *                     type="object",
+    *                     @OA\Property(
+    *                         property="id",
+    *                         description="User ID",
+    *                         type="integer",
+    *                     )
+    *                 )
+    *             )
+    *         )
+    * )
+    */
+    public function ban(Request $request)
+    {
+        $userId = $request->input('user_id');
+        // Check for data validity
+        $user = User::find($userId);
+        if (!$userId || empty($user)) {
+            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "User ID is invalid."], AppResponse::HTTP_BAD_REQUEST);
+        }
+        // Update the data
+        $user->active = ActiveStatus::Banned;
+        $user->save();
+
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS], AppResponse::HTTP_OK);
+    }
+
+    /**
+    * @OA\Post(
+    *         path="/api/users/unban",
+    *         tags={"Users"},
+    *         summary="Unban an user",
+    *         description="Unban an user",
+    *         operationId="unban-user",
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    *         @OA\RequestBody(
+    *             required=true,
+    *             @OA\MediaType(
+    *                 mediaType="application/x-www-form-urlencoded",
+    *                 @OA\Schema(
+    *                     type="object",
+    *                     @OA\Property(
+    *                         property="id",
+    *                         description="User ID",
+    *                         type="integer",
+    *                     )
+    *                 )
+    *             )
+    *         )
+    * )
+    */
+    public function unban(Request $request)
+    {
+        $userId = $request->input('user_id');
+        // Check for data validity
+        $user = User::find($userId);
+        if (!$userId || empty($user)) {
+            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "User ID is invalid."], AppResponse::HTTP_BAD_REQUEST);
+        }
+        // Update the data
+        if ($user->email_verified_at) {
+            $user->active = ActiveStatus::Active;
+        } else {
+            $user->active = ActiveStatus::Inactive;
+        }
+        $user->save();
+
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS], AppResponse::HTTP_OK);
+    }
 }

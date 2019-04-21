@@ -2,7 +2,11 @@
     <div class="animated fadeIn">
         <b-row>
             <b-col sm="12">
-                <c-table @page_changed="updateTableDataWithPage" @per_page_changed="updateTableDataWithPerPage"
+                <c-table
+                @page_changed="updateTableDataWithPage"
+                @per_page_changed="updateTableDataWithPerPage"
+                @ban_item="banUser"
+                @unban_item="unbanUser"
                 hover
                 striped
                 bordered
@@ -46,7 +50,37 @@ export default {
         updateTableDataWithPerPage(perPage) {
             this.getUsers(1, perPage)
         },
-        getUsers(page = 1, perPage = 25) {
+        banUser(userId, currentPage, perPage) {
+            var vm = this
+            vm.loadStatus = 1
+            UserAPI.banUser(userId)
+            .then(response => {
+                if (response.data.success) {
+                    vm.getUsers(currentPage, perPage)
+                } else {
+                    vm.loadStatus = 3
+                }
+            })
+            .catch(error => {
+                vm.loadStatus = 3
+            })
+        },
+        unbanUser(userId, currentPage, perPage) {
+            var vm = this
+            vm.loadStatus = 1
+            UserAPI.unbanUser(userId)
+            .then(response => {
+                if (response.data.success) {
+                    vm.getUsers(currentPage, perPage)
+                } else {
+                    vm.loadStatus = 3
+                }
+            })
+            .catch(error => {
+                vm.loadStatus = 3
+            })
+        },
+        getUsers(page = 1, perPage = 15) {
             var vm = this
             vm.loadStatus = 1
             UserAPI.getUsers(page, perPage)
@@ -64,7 +98,7 @@ export default {
         }
     },
     created () {
-        let perPage = window.localStorage.getItem('per_page') || 25
+        let perPage = window.localStorage.getItem('per_page') || 15
         this.getUsers(1, perPage)
     },
 }

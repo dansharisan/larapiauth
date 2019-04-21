@@ -40,9 +40,12 @@ Route::group([
     });
 });
 
+// Users API
 Route::group([
     'prefix' => 'users',
     'middleware' => 'jwt.auth'
 ], function() {
     Route::get('/', 'UserController@index');
+    Route::post('/ban', 'UserController@ban');
+    Route::post('/unban', 'UserController@unban');
 });
