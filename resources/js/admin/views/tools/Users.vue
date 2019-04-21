@@ -53,10 +53,10 @@ export default {
         updateTableDataWithPerPage(perPage) {
             this.getUsers(1, perPage)
         },
-        deleteUsers(userIds, currentPage, perPage) {
+        deleteUsers(userIdsSeq, currentPage, perPage) {
             var vm = this
             vm.loadStatus = 1
-            UserAPI.deleteUsers(userIds)
+            UserAPI.deleteUsers(userIdsSeq)
             .then(response => {
                 if (response.data.success) {
                     vm.getUsers(currentPage, perPage)

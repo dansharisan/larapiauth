@@ -208,12 +208,14 @@ class UserController extends Controller
     *             @OA\MediaType(
     *                 mediaType="application/x-www-form-urlencoded",
     *                 @OA\Schema(
-    *                     type="array",
-    *                      @OA\Property(
+    *                     type="object",
+    *                     @OA\Property(
     *                         property="ids",
     *                         description="Users' IDs",
-    *                         type="string",
-    *                         format="password"
+    *                         type="array",
+    *                         @OA\Items(
+    *                             type="integer"
+    *                         ),
     *                     ),
     *                 )
     *             )
@@ -224,12 +226,13 @@ class UserController extends Controller
     {
         // Check for data validity
         $ids = $request->input('ids');
-        if (!is_array($ids) || count($ids) == 0) {
+
+        if (empty($ids) || !is_array(explode(',', $ids)) || count(explode(',', $ids)) == 0) {
             return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => 'Invalid data.'], AppResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Delete selected users
-        User::whereIn('id', $ids)->delete();
+        User::whereIn('id', explode(',', $ids))->delete();
 
         return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Deleted users successfully.'], AppResponse::HTTP_OK);
     }

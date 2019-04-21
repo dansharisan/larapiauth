@@ -45,10 +45,10 @@ export default {
     POST /api/users/collection:batchDelete
     To delete a selected collection of users
     */
-    deleteUsers: function(userIds) {
+    deleteUsers: function(userIdsSeq) {
         return axios.post(APP_CONFIG.API_URL + '/users/collection:batchDelete',
         {
-            ids: userIds,
+            ids: userIdsSeq,
         });
     },
 }

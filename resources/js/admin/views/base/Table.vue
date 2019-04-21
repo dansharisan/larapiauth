@@ -186,8 +186,9 @@ export default {
                         let id = $(this).parent('div').data('id');
                         itemIds.push(id)
                     })
+                    let itemIdsSeq = itemIds.join(',')
 
-                    this.$emit('delete_items', itemIds, this.currentPage, this.perPage)
+                    this.$emit('delete_items', itemIdsSeq, this.currentPage, this.perPage)
                 }
             })
 
