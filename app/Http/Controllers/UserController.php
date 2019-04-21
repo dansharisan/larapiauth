@@ -98,7 +98,7 @@ class UserController extends Controller
         $user->active = ActiveStatus::Banned;
         $user->save();
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS], AppResponse::HTTP_OK);
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Banned user successfully.'], AppResponse::HTTP_OK);
     }
 
     /**
@@ -142,6 +142,45 @@ class UserController extends Controller
         }
         $user->save();
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS], AppResponse::HTTP_OK);
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Unbanned user successfully.'], AppResponse::HTTP_OK);
+    }
+
+    /**
+    * @OA\Delete(
+    *         path="/api/users/{id}",
+    *         tags={"Users"},
+    *         summary="Delete an user",
+    *         description="Delete an user",
+    *         operationId="delete-user",
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    *         @OA\Parameter(
+    *             name="id",
+    *             in="path",
+    *             description="User ID",
+    *             required=true,
+    *             @OA\Schema(
+    *                 type="integer",
+    *             )
+    *         ),
+    * )
+    */
+    public function delete($id)
+    {
+        // Check for data validity
+        $user = User::find($id);
+        if (!$id || empty($user)) {
+            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "User ID is invalid."], AppResponse::HTTP_BAD_REQUEST);
+        }
+        // Delete the data
+        $user->delete();
+
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Deleted user successfully.'], AppResponse::HTTP_OK);
     }
 }

@@ -48,4 +48,5 @@ Route::group([
     Route::get('/', 'UserController@index');
     Route::patch('/{id}/ban', 'UserController@ban');
     Route::patch('/{id}/unban', 'UserController@unban');
+    Route::delete('/{id}', 'UserController@delete');
 });

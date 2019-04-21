@@ -32,4 +32,12 @@ export default {
     unbanUser: function(userId) {
         return axios.patch(APP_CONFIG.API_URL + '/users/' + userId + '/unban');
     },
+
+    /*
+    DELETE /api/users/{id}/unban
+    To delete an user
+    */
+    deleteUser: function(userId) {
+        return axios.delete(APP_CONFIG.API_URL + '/users/' + userId);
+    },
 }

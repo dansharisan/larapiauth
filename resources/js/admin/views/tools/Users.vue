@@ -7,6 +7,7 @@
                 @per_page_changed="updateTableDataWithPerPage"
                 @ban_item="banUser"
                 @unban_item="unbanUser"
+                @delete_item="deleteUser"
                 hover
                 striped
                 bordered
@@ -49,6 +50,21 @@ export default {
         },
         updateTableDataWithPerPage(perPage) {
             this.getUsers(1, perPage)
+        },
+        deleteUser(userId, currentPage, perPage) {
+            var vm = this
+            vm.loadStatus = 1
+            UserAPI.deleteUser(userId)
+            .then(response => {
+                if (response.data.success) {
+                    vm.getUsers(currentPage, perPage)
+                } else {
+                    vm.loadStatus = 3
+                }
+            })
+            .catch(error => {
+                vm.loadStatus = 3
+            })
         },
         banUser(userId, currentPage, perPage) {
             var vm = this

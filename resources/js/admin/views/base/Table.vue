@@ -154,7 +154,19 @@ export default {
             alert('TODO: edit item')
         },
         deleteItem (item) {
-            alert('TODO: delete item')
+            this.$swal({
+                title: 'You sure to delete this user?',
+                text: "This action cannot be undone.",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#f86c6b',
+                cancelButtonColor: '#a4b7c1',
+                confirmButtonText: 'Delete'
+            }).then((result) => {
+                if (result.value) {
+                    this.$emit('delete_item', item.id, this.currentPage, this.perPage)
+                }
+            })
         },
         deleteItems (item) {
             alert('TODO: delete items')
