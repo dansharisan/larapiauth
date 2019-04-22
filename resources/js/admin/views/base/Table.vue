@@ -2,6 +2,83 @@
     <b-card :header="caption" header-class="text-left" class="text-center">
         <b-loading v-if="loadStatus==1"></b-loading>
         <div v-else-if="loadStatus == 2">
+            <b-modal id="edit-form-modal" centered title="Edit">
+                <b-form-group>
+                    <b-input-group>
+                        <b-input-group-prepend>
+                            <b-input-group-text>ID</b-input-group-text>
+                        </b-input-group-prepend>
+                        <b-form-input type="number" placeholder="ID" :disabled="true" :value="editingItem.id" v-if="isEdit"/>
+                        <b-input-group-append>
+                            <b-input-group-text><i class="fa fa-id-card-o" /></b-input-group-text>
+                        </b-input-group-append>
+                    </b-input-group>
+                </b-form-group>
+                <b-form-group>
+                    <b-input-group>
+                        <b-input-group-prepend>
+                            <b-input-group-text>Email</b-input-group-text>
+                        </b-input-group-prepend>
+                        <b-form-input type="email" placeholder="Email" :disabled="true" :value="editingItem.email" v-if="isEdit"/>
+                        <b-input-group-append>
+                            <b-input-group-text><i class="fa fa-envelope-o" /></b-input-group-text>
+                        </b-input-group-append>
+                    </b-input-group>
+                </b-form-group>
+                <b-form-group>
+                    <b-input-group>
+                        <b-input-group-prepend>
+                            <b-input-group-text>Verified at</b-input-group-text>
+                        </b-input-group-prepend>
+                        <b-datepicker v-model="editingItem.email_verified_at" v-if="isEdit"/>
+                        <b-input-group-append>
+                            <b-input-group-text><i class="fa fa-check-square-o" /></b-input-group-text>
+                        </b-input-group-append>
+                    </b-input-group>
+                </b-form-group>
+                <b-form-group
+                :label-cols="3"
+                label="Roles"
+                label-for="basicCustomCheckboxes"
+                >
+                    <b-form-checkbox-group id="roles-checkboxes" stacked>
+                        <div class="text-left custom-control custom-checkbox">
+                            <input
+                              id="role-1-checkbox"
+                              type="checkbox"
+                              class="custom-control-input"
+                              value="1"
+                              checked
+                            >
+                            <label class="custom-control-label" for="role-1-checkbox">
+                              Member
+                            </label>
+                          </div>
+                          <div class="text-left custom-control custom-checkbox">
+                            <input
+                              id="role-2-checkbox"
+                              type="checkbox"
+                              class="custom-control-input"
+                              value="2"
+                            >
+                            <label class="custom-control-label" for="role-2-checkbox">
+                              Moderator
+                            </label>
+                          </div>
+                          <div class="text-left custom-control custom-checkbox">
+                            <input
+                              id="role-3-checkbox"
+                              type="checkbox"
+                              class="custom-control-input"
+                              value="3"
+                            >
+                            <label class="custom-control-label" for="role-3-checkbox">
+                              Administrator
+                            </label>
+                          </div>
+                      </b-form-checkbox-group>
+                  </b-form-group>
+            </b-modal>
             <div class="row justify-content-between">
                 <div class="col-4">
                     <b-input-group class="mb-3 input-group-sm">
@@ -60,7 +137,7 @@
                     </b-badge>
                 </template>
                 <template slot="actions" slot-scope="row">
-                    <b-button size="sm" class="btn-action" variant="warning" @click="editItem(row.item)">
+                    <b-button size="sm" class="btn-action" variant="warning" @click="editItem(row.item)" v-b-modal.edit-form-modal>
                         <i class="fa fa-pencil-square-o text-white" aria-hidden="true"></i> <span class="text-white">Edit</span>
                     </b-button>
                     <b-button size="sm" class="btn-action" variant="danger" @click="deleteItem(row.item)">
@@ -137,7 +214,9 @@ export default {
         return {
             currentPage: 1,
             perPage: window.localStorage.getItem('per_page') || 15,
-            hasChecked: false
+            hasChecked: false,
+            isEdit: false,
+            editingItem: null
         }
     },
     methods: {
@@ -152,7 +231,8 @@ export default {
             alert('TODO: create item')
         },
         editItem (item) {
-            alert('TODO: edit item')
+            this.isEdit = true;
+            this.editingItem = item
         },
         deleteItem (item) {
             this.$swal({
