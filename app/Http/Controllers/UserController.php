@@ -7,6 +7,8 @@ use App\Http\AppResponse;
 use App\User;
 use App\Enums\ActiveStatus;
 use App\Enums\RoleType;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -235,5 +237,95 @@ class UserController extends Controller
         User::whereIn('id', explode(',', $ids))->delete();
 
         return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Deleted users successfully.'], AppResponse::HTTP_OK);
+    }
+
+    /**
+    * @OA\Patch(
+    *         path="/api/users/{id}",
+    *         tags={"Users"},
+    *         summary="Edit an user",
+    *         description="Edit an user",
+    *         operationId="edit-user",
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    *         @OA\Parameter(
+    *             name="id",
+    *             in="path",
+    *             description="User ID",
+    *             required=true,
+    *             @OA\Schema(
+    *                 type="integer",
+    *             )
+    *         ),
+    *         @OA\RequestBody(
+    *             required=true,
+    *             @OA\MediaType(
+    *                 mediaType="application/x-www-form-urlencoded",
+    *                 @OA\Schema(
+    *                     type="object",
+    *                     @OA\Property(
+    *                         property="email_verified_at",
+    *                         description="Email verified date",
+    *                         type="string",
+    *                         format="date",
+    *                     ),
+    *                     @OA\Property(
+    *                         property="role_ids",
+    *                         description="Role IDs",
+    *                         type="array",
+    *                         @OA\Items(
+    *                             type="integer"
+    *                         ),
+    *                     ),
+    *                 )
+    *             )
+    *         )
+    * )
+    */
+    public function update(Request $request, $id)
+    {
+        $roleIds = $request->input('role_ids');
+        // Check for data validity
+        if (empty($roleIds) || !is_array(explode(',', $roleIds)) || count(explode(',', $roleIds)) == 0) {
+            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => 'Please select at least a role.'], AppResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $user = User::find($id);
+            if ($user == null) {
+                return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => 'Invalid user ID'], AppResponse::HTTP_BAD_REQUEST);
+            }
+            // Update user data
+            $user->fill($request->all());
+            $user->email_verified_at = $request->input('email_verified_at');
+            $user->save();
+
+            // Remove old roles
+            DB::table('model_has_roles')->where('model_id', $id)->where('model_type', User::class)->delete();
+            // Add new roles
+            $roleIdArr = preg_split('/,/', $roleIds, null, PREG_SPLIT_NO_EMPTY);
+            if ($roleIdArr && is_array($roleIdArr) && !empty($roleIdArr[0]) && count($roleIdArr) > 0) {
+                foreach ($roleIdArr as $roleId) {
+                    $role = Role::find($roleId);
+                    $user->assignRole($role->name);
+                }
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK);
     }
 }

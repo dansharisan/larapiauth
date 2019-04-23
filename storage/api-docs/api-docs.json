@@ -471,6 +471,57 @@
                         "description": "Server error"
                     }
                 }
+            },
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Edit an user",
+                "description": "Edit an user",
+                "operationId": "edit-user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "email_verified_at": {
+                                        "description": "Email verified date",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "role_ids": {
+                                        "description": "Role IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
             }
         },
         "/api/users/collection:batchDelete": {
