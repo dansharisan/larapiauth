@@ -40,6 +40,8 @@
                               class="custom-control-input"
                               value="1"
                               :checked="editingItem.roleIdArr.includes(1)"
+                              :state="$v.form.role1 | state"
+                              @change="setRole1Checkbox($event.target.value)"
                               v-if="isEdit"
                             >
                             <label class="custom-control-label" for="role-1-checkbox">
@@ -48,31 +50,38 @@
                           </div>
                           <div class="text-left custom-control custom-checkbox">
                             <input
-                              id="role-2-checkbox"
-                              type="checkbox"
-                              class="custom-control-input"
-                              value="2"
-                              :checked="editingItem.roleIdArr.includes(2)"
-                              v-if="isEdit"
+                                id="role-2-checkbox"
+                                type="checkbox"
+                                class="custom-control-input"
+                                value="2"
+                                :checked="editingItem.roleIdArr.includes(2)"
+                                :state="$v.form.role2 | state"
+                                @change="setRole2Checkbox($event.target.value)"
+                                v-if="isEdit"
                             >
                             <label class="custom-control-label" for="role-2-checkbox">
                               Moderator
                             </label>
                           </div>
                           <div class="text-left custom-control custom-checkbox">
-                            <input
-                              id="role-3-checkbox"
-                              type="checkbox"
-                              class="custom-control-input"
-                              value="3"
-                              :checked="editingItem.roleIdArr.includes(3)"
-                              v-if="isEdit"
-                            >
+                              <input
+                                  id="role-3-checkbox"
+                                  type="checkbox"
+                                  class="custom-control-input"
+                                  value="3"
+                                  :checked="editingItem.roleIdArr.includes(3)"
+                                  :state="$v.form.role3 | state"
+                                  @change="setRole3Checkbox($event.target.value)"
+                                  v-if="isEdit"
+                              >
                             <label class="custom-control-label" for="role-3-checkbox">
                               Administrator
                             </label>
                           </div>
                       </b-form-checkbox-group>
+                      <div class="invalid-feedback d-block text-left" v-if="$v.form.role1.$invalid && $v.form.role2.$invalid && $v.form.role3.$invalid">
+                          {{ "Please select at least one role." }}
+                      </div>
                   </b-form-group>
             </b-modal>
             <div class="row justify-content-between">
@@ -166,6 +175,8 @@
 </template>
 
 <script>
+import { sameAs } from 'validators'
+
 export default {
     name : 'cTable',
     props: {
@@ -206,16 +217,42 @@ export default {
             default: 0
         }
     },
+    validations () {
+        return {
+            form: {
+                role1: { sameAs: sameAs( () => true ) },
+                role2: { sameAs: sameAs( () => true ) },
+                role3: { sameAs: sameAs( () => true ) },
+            },
+        }
+    },
     data: () => {
         return {
             currentPage: 1,
             perPage: window.localStorage.getItem('per_page') || 15,
             hasChecked: false,
             isEdit: false,
-            editingItem: null
+            editingItem: null,
+            form: {
+                role1: '',
+                role2: '',
+                role3: '',
+            },
         }
     },
     methods: {
+        setRole1Checkbox(value) {
+            this.form.role1 = $('#role-1-checkbox').prop("checked")
+            this.$v.$touch()
+        },
+        setRole2Checkbox(value) {
+            this.form.role2 = $('#role-2-checkbox').prop("checked")
+            this.$v.$touch()
+        },
+        setRole3Checkbox(value) {
+            this.form.role3 = $('#role-3-checkbox').prop("checked")
+            this.$v.$touch()
+        },
         selectItem (item) {
             if ($('table .checkbox-item input').filter(':checked').length > 0) {
                 this.hasChecked = true
@@ -230,6 +267,9 @@ export default {
             this.editingItem = item
             this.editingItem.roleIdArr = item.roles.map(role => role.id);
             this.isEdit = true;
+            this.form.role1 = this.editingItem.roleIdArr.includes(1)
+            this.form.role2 = this.editingItem.roleIdArr.includes(2)
+            this.form.role3 = this.editingItem.roleIdArr.includes(3)
         },
         editItem (bvModalEvt) {
             var vm = this
@@ -237,6 +277,10 @@ export default {
             bvModalEvt.preventDefault()
 
             // TODO: check for data validity
+            this.$v.$touch()
+            if (this.$v.form.role1.$invalid && this.$v.form.role2.$invalid && this.$v.form.role3.$invalid) {
+                return;
+            }
 
             // TODO: submit the form
 
