@@ -2,38 +2,29 @@
     <b-card :header="caption" header-class="text-left" class="text-center">
         <b-loading v-if="loadStatus==1"></b-loading>
         <div v-else-if="loadStatus == 2">
-            <b-modal id="edit-form-modal" centered title="Edit">
+            <b-modal id="edit-form-modal" centered title="Edit" @ok="editItem" ref="edit-form-modal">
                 <b-form-group>
                     <b-input-group>
                         <b-input-group-prepend>
-                            <b-input-group-text>ID</b-input-group-text>
+                            <b-input-group-text><i class="fa fa-id-card-o pr-1"/> ID</b-input-group-text>
                         </b-input-group-prepend>
                         <b-form-input type="number" placeholder="ID" :disabled="true" :value="editingItem.id" v-if="isEdit"/>
-                        <b-input-group-append>
-                            <b-input-group-text><i class="fa fa-id-card-o" /></b-input-group-text>
-                        </b-input-group-append>
                     </b-input-group>
                 </b-form-group>
                 <b-form-group>
                     <b-input-group>
                         <b-input-group-prepend>
-                            <b-input-group-text>Email</b-input-group-text>
+                            <b-input-group-text><i class="fa fa-envelope-o pr-1" />Email</b-input-group-text>
                         </b-input-group-prepend>
                         <b-form-input type="email" placeholder="Email" :disabled="true" :value="editingItem.email" v-if="isEdit"/>
-                        <b-input-group-append>
-                            <b-input-group-text><i class="fa fa-envelope-o" /></b-input-group-text>
-                        </b-input-group-append>
                     </b-input-group>
                 </b-form-group>
                 <b-form-group>
                     <b-input-group>
                         <b-input-group-prepend>
-                            <b-input-group-text>Verified at</b-input-group-text>
+                            <b-input-group-text><i class="fa fa-check-square-o pr-1" />Verified at</b-input-group-text>
                         </b-input-group-prepend>
                         <b-datepicker v-model="editingItem.email_verified_at" v-if="isEdit"/>
-                        <b-input-group-append>
-                            <b-input-group-text><i class="fa fa-check-square-o" /></b-input-group-text>
-                        </b-input-group-append>
                     </b-input-group>
                 </b-form-group>
                 <b-form-group
@@ -48,7 +39,8 @@
                               type="checkbox"
                               class="custom-control-input"
                               value="1"
-                              checked
+                              :checked="editingItem.roleIdArr.includes(1)"
+                              v-if="isEdit"
                             >
                             <label class="custom-control-label" for="role-1-checkbox">
                               Member
@@ -60,6 +52,8 @@
                               type="checkbox"
                               class="custom-control-input"
                               value="2"
+                              :checked="editingItem.roleIdArr.includes(2)"
+                              v-if="isEdit"
                             >
                             <label class="custom-control-label" for="role-2-checkbox">
                               Moderator
@@ -71,6 +65,8 @@
                               type="checkbox"
                               class="custom-control-input"
                               value="3"
+                              :checked="editingItem.roleIdArr.includes(3)"
+                              v-if="isEdit"
                             >
                             <label class="custom-control-label" for="role-3-checkbox">
                               Administrator
@@ -137,7 +133,7 @@
                     </b-badge>
                 </template>
                 <template slot="actions" slot-scope="row">
-                    <b-button size="sm" class="btn-action" variant="warning" @click="editItem(row.item)" v-b-modal.edit-form-modal>
+                    <b-button size="sm" class="btn-action" variant="warning" @click="prepareEditingItem(row.item)" v-b-modal.edit-form-modal>
                         <i class="fa fa-pencil-square-o text-white" aria-hidden="true"></i> <span class="text-white">Edit</span>
                     </b-button>
                     <b-button size="sm" class="btn-action" variant="danger" @click="deleteItem(row.item)">
@@ -230,9 +226,25 @@ export default {
         createItem () {
             alert('TODO: create item')
         },
-        editItem (item) {
-            this.isEdit = true;
+        prepareEditingItem (item) {
             this.editingItem = item
+            this.editingItem.roleIdArr = item.roles.map(role => role.id);
+            this.isEdit = true;
+        },
+        editItem (bvModalEvt) {
+            var vm = this
+            // Prevent modal from closing
+            bvModalEvt.preventDefault()
+
+            // TODO: check for data validity
+
+            // TODO: submit the form
+
+            // Trigger submit handler
+            this.$nextTick(() => {
+                // Hide it right away
+                vm.$refs["edit-form-modal"].hide()
+            })
         },
         deleteItem (item) {
             this.$swal({
@@ -240,6 +252,7 @@ export default {
                 text: "This is a soft delete mechanism. After deleting, data will no longer show here but still be remained in DB.",
                 type: 'warning',
                 showCancelButton: true,
+                reverseButtons: true,
                 confirmButtonColor: '#f86c6b',
                 cancelButtonColor: '#a4b7c1',
                 confirmButtonText: 'Delete'
@@ -255,6 +268,7 @@ export default {
                 text: "This is a soft delete mechanism. After deleting, data will no longer show here but still be remained in DB.",
                 type: 'warning',
                 showCancelButton: true,
+                reverseButtons: true,
                 confirmButtonColor: '#f86c6b',
                 cancelButtonColor: '#a4b7c1',
                 confirmButtonText: 'Delete'
@@ -279,6 +293,7 @@ export default {
                 text: "Banned users will not be able to login until you unban them.",
                 type: 'warning',
                 showCancelButton: true,
+                reverseButtons: true,
                 confirmButtonColor: '#f86c6b',
                 cancelButtonColor: '#a4b7c1',
                 confirmButtonText: 'Yes, ban him/her!'
@@ -294,6 +309,7 @@ export default {
                 text: "This user will be able to login again after being unbanned.",
                 type: 'info',
                 showCancelButton: true,
+                reverseButtons: true,
                 confirmButtonColor: '#4dbd74',
                 cancelButtonColor: '#a4b7c1',
                 confirmButtonText: 'Yes, unban him/her.'
