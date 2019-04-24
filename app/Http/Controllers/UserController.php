@@ -307,7 +307,9 @@ class UserController extends Controller
             // Update user data
             $user->fill($request->all());
             $verifiedAt = $request->input('email_verified_at');
-            $user->email_verified_at = substr($verifiedAt, 0, 10) . ' 00:00:00';
+            //$time = strtotime($verifiedAt);
+            //$dateInLocal = date("Y-m-d H:i:s", $time);
+            $user->email_verified_at = date("Y-m-d H:i:s", strtotime($verifiedAt));
             $user->save();
 
             // Remove old roles
