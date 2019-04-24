@@ -57,7 +57,7 @@ export default {
     To edit an user
     */
     editUser: function(id, verifiedAt, roleIdsSeq) {
-        return axios.post(APP_CONFIG.API_URL + '/users/id',
+        return axios.patch(APP_CONFIG.API_URL + '/users/' + id,
         {
             email_verified_at: verifiedAt,
             role_ids: roleIdsSeq

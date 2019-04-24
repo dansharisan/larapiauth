@@ -3,83 +3,87 @@
         <b-loading v-if="loadStatus==1"></b-loading>
         <div v-else-if="loadStatus == 2">
             <b-modal id="edit-form-modal" centered title="Edit" @ok="editItem" ref="edit-form-modal" :key="editFormModal">
-                <b-form-group>
-                    <b-input-group>
-                        <b-input-group-prepend>
-                            <b-input-group-text><i class="fa fa-id-card-o pr-1"/> ID</b-input-group-text>
-                        </b-input-group-prepend>
-                        <b-form-input type="number" placeholder="ID" :disabled="true" :value="editingItem.id" v-if="isEdit"/>
-                    </b-input-group>
-                </b-form-group>
-                <b-form-group>
-                    <b-input-group>
-                        <b-input-group-prepend>
-                            <b-input-group-text><i class="fa fa-envelope-o pr-1" />Email</b-input-group-text>
-                        </b-input-group-prepend>
-                        <b-form-input type="email" placeholder="Email" :disabled="true" :value="editingItem.email" v-if="isEdit"/>
-                    </b-input-group>
-                </b-form-group>
-                <b-form-group>
-                    <b-input-group>
-                        <b-input-group-prepend>
-                            <b-input-group-text><i class="fa fa-check-square-o pr-1" />Verified at</b-input-group-text>
-                        </b-input-group-prepend>
-                        <b-datepicker v-model="editingItem.email_verified_at" v-if="isEdit"/>
-                    </b-input-group>
-                </b-form-group>
-                <b-form-group
-                :label-cols="3"
-                label="Roles"
-                label-for="basicCustomCheckboxes"
-                >
-                    <b-form-checkbox-group id="roles-checkboxes" stacked>
-                        <div class="text-left custom-control custom-checkbox">
-                            <input
-                              id="role-1-checkbox"
-                              type="checkbox"
-                              class="custom-control-input"
-                              value="1"
-                              :checked="editingItem.roleIdArr.includes(1)"
-                              @change="setRole1Checkbox($event.target.value)"
-                              v-if="isEdit"
-                            >
-                            <label class="custom-control-label" for="role-1-checkbox">
-                              Member
-                            </label>
-                          </div>
-                          <div class="text-left custom-control custom-checkbox">
-                            <input
-                                id="role-2-checkbox"
-                                type="checkbox"
-                                class="custom-control-input"
-                                value="2"
-                                :checked="editingItem.roleIdArr.includes(2)"
-                                @change="setRole2Checkbox($event.target.value)"
-                                v-if="isEdit"
-                            >
-                            <label class="custom-control-label" for="role-2-checkbox">
-                              Moderator
-                            </label>
-                          </div>
-                          <div class="text-left custom-control custom-checkbox">
-                              <input
-                                  id="role-3-checkbox"
+                <b-loading v-if="submitStatus == 1"></b-loading>
+                <div v-else-if="submitStatus == 2">
+                    <b-form-group>
+                        <b-input-group>
+                            <b-input-group-prepend>
+                                <b-input-group-text><i class="fa fa-id-card-o pr-1"/> ID</b-input-group-text>
+                            </b-input-group-prepend>
+                            <b-form-input type="number" placeholder="ID" :disabled="true" :value="editingItem.id" v-if="isEdit"/>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group>
+                        <b-input-group>
+                            <b-input-group-prepend>
+                                <b-input-group-text><i class="fa fa-envelope-o pr-1" />Email</b-input-group-text>
+                            </b-input-group-prepend>
+                            <b-form-input type="email" placeholder="Email" :disabled="true" :value="editingItem.email" v-if="isEdit"/>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group>
+                        <b-input-group>
+                            <b-input-group-prepend>
+                                <b-input-group-text><i class="fa fa-check-square-o pr-1" />Verified at</b-input-group-text>
+                            </b-input-group-prepend>
+                            <b-datepicker v-model="form.email_verified_at" v-if="isEdit"/>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group
+                    :label-cols="3"
+                    label="Roles"
+                    label-for="basicCustomCheckboxes"
+                    >
+                        <b-form-checkbox-group id="roles-checkboxes" stacked>
+                            <div class="text-left custom-control custom-checkbox">
+                                <input
+                                  id="role-1-checkbox"
                                   type="checkbox"
                                   class="custom-control-input"
-                                  value="3"
-                                  :checked="editingItem.roleIdArr.includes(3)"
-                                  @change="setRole3Checkbox($event.target.value)"
+                                  value="1"
+                                  :checked="editingItem.roleIdArr.includes(1)"
+                                  @change="setRole1Checkbox($event.target.value)"
                                   v-if="isEdit"
-                              >
-                            <label class="custom-control-label" for="role-3-checkbox">
-                              Administrator
-                            </label>
+                                >
+                                <label class="custom-control-label" for="role-1-checkbox">
+                                  Member
+                                </label>
+                              </div>
+                              <div class="text-left custom-control custom-checkbox">
+                                <input
+                                    id="role-2-checkbox"
+                                    type="checkbox"
+                                    class="custom-control-input"
+                                    value="2"
+                                    :checked="editingItem.roleIdArr.includes(2)"
+                                    @change="setRole2Checkbox($event.target.value)"
+                                    v-if="isEdit"
+                                >
+                                <label class="custom-control-label" for="role-2-checkbox">
+                                  Moderator
+                                </label>
+                              </div>
+                              <div class="text-left custom-control custom-checkbox">
+                                  <input
+                                      id="role-3-checkbox"
+                                      type="checkbox"
+                                      class="custom-control-input"
+                                      value="3"
+                                      :checked="editingItem.roleIdArr.includes(3)"
+                                      @change="setRole3Checkbox($event.target.value)"
+                                      v-if="isEdit"
+                                  >
+                                <label class="custom-control-label" for="role-3-checkbox">
+                                  Administrator
+                                </label>
+                              </div>
+                          </b-form-checkbox-group>
+                          <div class="invalid-feedback d-block text-left" v-if="$v.form.role1.$invalid && $v.form.role2.$invalid && $v.form.role3.$invalid">
+                              {{ "Please select at least one role." }}
                           </div>
-                      </b-form-checkbox-group>
-                      <div class="invalid-feedback d-block text-left" v-if="$v.form.role1.$invalid && $v.form.role2.$invalid && $v.form.role3.$invalid">
-                          {{ "Please select at least one role." }}
-                      </div>
-                  </b-form-group>
+                      </b-form-group>
+                  </div>
+                  <p v-else class="text-center mb-0">Data submit error.</p>
             </b-modal>
             <div class="row justify-content-between">
                 <div class="col-4">
@@ -212,6 +216,10 @@ export default {
         loadStatus: {
             type: Number,
             default: 0
+        },
+        submitStatus: {
+            type: Number,
+            default: 2
         }
     },
     validations () {
@@ -234,6 +242,7 @@ export default {
                 role1: '',
                 role2: '',
                 role3: '',
+                email_verified_at: null
             },
             editFormModal: 0
         }
@@ -262,6 +271,7 @@ export default {
             alert('TODO: create item')
         },
         prepareEditingItem (item) {
+            this.submitStatus = 2
             this.forceRerender()
             this.editingItem = item
             this.editingItem.roleIdArr = item.roles.map(role => role.id);
@@ -269,27 +279,38 @@ export default {
             this.form.role1 = this.editingItem.roleIdArr.includes(1)
             this.form.role2 = this.editingItem.roleIdArr.includes(2)
             this.form.role3 = this.editingItem.roleIdArr.includes(3)
+            this.form.email_verified_at = this.editingItem.email_verified_at
         },
         editItem (bvModalEvt) {
             var vm = this
             // Prevent modal from closing
             bvModalEvt.preventDefault()
 
-            // TODO: check for data validity
+            // Check for data validity
             this.$v.$touch()
             if (this.$v.form.role1.$invalid && this.$v.form.role2.$invalid && this.$v.form.role3.$invalid) {
                 return;
             }
 
-            // TODO: submit the form
+            // Prepare data
+            let roleIdsSeq = ''
+            if ($('#role-1-checkbox').prop("checked")){
+                roleIdsSeq += '1,'
+            }
+            if ($('#role-2-checkbox').prop("checked")){
+                roleIdsSeq += '2,'
+            }
+            if ($('#role-3-checkbox').prop("checked")){
+                roleIdsSeq += '3,'
+            }
+            vm.editingItem.role_ids = roleIdsSeq
+            vm.editingItem.email_verified_at = this.form.email_verified_at
 
-            // Trigger submit handler
-            this.$nextTick(() => {
-                // Hide it right away
-                vm.$refs["edit-form-modal"].hide()
-            })
+            // Broadcast edit_item event
+            vm.$emit('edit_item', vm.editingItem, this.currentPage, this.perPage)
         },
         deleteItem (item) {
+            var vm = this
             this.$swal({
                 title: 'You sure to delete this item?',
                 text: "This is a soft delete mechanism. After deleting, data will no longer show here but still be remained in DB.",
@@ -301,11 +322,12 @@ export default {
                 confirmButtonText: 'Delete'
             }).then((result) => {
                 if (result.value) {
-                    this.$emit('delete_item', item.id, this.currentPage, this.perPage)
+                    vm.$emit('delete_item', item.id, this.currentPage, this.perPage)
                 }
             })
         },
         deleteItems () {
+            var vm = this
             this.$swal({
                 title: 'You sure to delete these items?',
                 text: "This is a soft delete mechanism. After deleting, data will no longer show here but still be remained in DB.",
@@ -325,12 +347,13 @@ export default {
                     })
                     let itemIdsSeq = itemIds.join(',')
 
-                    this.$emit('delete_items', itemIdsSeq, this.currentPage, this.perPage)
+                    vm.$emit('delete_items', itemIdsSeq, this.currentPage, this.perPage)
                 }
             })
 
         },
         banItem (item) {
+            var vm = this
             this.$swal({
                 title: 'You sure to ban this user?',
                 text: "Banned users will not be able to login until you unban them.",
@@ -342,11 +365,12 @@ export default {
                 confirmButtonText: 'Yes, ban him/her!'
             }).then((result) => {
                 if (result.value) {
-                    this.$emit('ban_item', item.id, this.currentPage, this.perPage)
+                    vm.$emit('ban_item', item.id, this.currentPage, this.perPage)
                 }
             })
         },
         unbanItem (item) {
+            var vm = this
             this.$swal({
                 title: 'You sure to unban this user?',
                 text: "This user will be able to login again after being unbanned.",
@@ -358,7 +382,7 @@ export default {
                 confirmButtonText: 'Yes, unban him/her.'
             }).then((result) => {
                 if (result.value) {
-                    this.$emit('unban_item', item.id, this.currentPage, this.perPage)
+                    vm.$emit('unban_item', item.id, this.currentPage, this.perPage)
                 }
             })
         },
@@ -373,6 +397,12 @@ export default {
         },
         forceRerender() {
             this.editFormModal += 1;
+        }
+    },
+    mounted() {
+        // Hide the modal when finish submitting
+        if (this.loadStatus == 2) {
+            this.$refs["edit-form-modal"].hide()
         }
     },
     watch: {

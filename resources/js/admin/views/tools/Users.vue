@@ -10,6 +10,7 @@
                 @unban_item="unbanUser"
                 @delete_item="deleteUser"
                 @delete_items="deleteUsers"
+                @edit_item="editUser"
                 hover
                 striped
                 bordered
@@ -18,6 +19,7 @@
                 :tableData="tableData"
                 :fields="fields"
                 :loadStatus="loadStatus"
+                :submitStatus="submitStatus"
                 />
             </b-col>
         </b-row>
@@ -43,7 +45,8 @@ export default {
                 { key: 'created_at', label: 'Registered' },
                 { key: 'actions' }
             ],
-            loadStatus: 0
+            loadStatus: 0,
+            submitStatus: 2
         }
     },
     methods: {
@@ -147,6 +150,27 @@ export default {
             })
             .catch(error => {
                 vm.loadStatus = 3
+            })
+        },
+        editUser(userItem, currentPage, perPage) {
+            var vm = this
+            vm.submitStatus = 1
+            UserAPI.editUser(userItem.id, userItem.email_verified_at, userItem.role_ids)
+            .then(response => {
+                if (response.data.success) {
+                    vm.submitStatus = 2
+                    vm.getUsers(currentPage, perPage)
+                    vm.$snotify.success(response.data.message)
+                } else {
+                    vm.submitStatus = 3
+                    vm.$snotify.error(response.data.message)
+                }
+            })
+            .catch(error => {
+                vm.submitStatus = 3
+                if (error && error.response && error.response.data && error.response.data.message) {
+                    vm.$snotify.error(error.response.data.message)
+                }
             })
         }
     },

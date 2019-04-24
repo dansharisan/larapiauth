@@ -9,6 +9,7 @@ use App\Enums\ActiveStatus;
 use App\Enums\RoleType;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+// use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -305,7 +306,8 @@ class UserController extends Controller
             }
             // Update user data
             $user->fill($request->all());
-            $user->email_verified_at = $request->input('email_verified_at');
+            $verifiedAt = $request->input('email_verified_at');
+            $user->email_verified_at = substr($verifiedAt, 0, 10) . ' 00:00:00';
             $user->save();
 
             // Remove old roles
@@ -326,6 +328,6 @@ class UserController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK);
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Edited user successfully.', 'data' => $user], AppResponse::HTTP_OK);
     }
 }
