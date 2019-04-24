@@ -1,16 +1,16 @@
-<template>
+processingItem<template>
     <b-card :header="caption" header-class="text-left" class="text-center">
         <b-loading v-if="loadStatus==1"></b-loading>
         <div v-else-if="loadStatus == 2">
-            <b-modal id="edit-form-modal" centered title="Edit" @ok="editItem" ref="edit-form-modal" :key="editFormModal">
+            <b-modal id="edit-form-modal" centered :title="isEdit ? 'Edit user' : 'Create user'" @ok="processItem" ref="edit-form-modal" :key="editFormModal">
                 <b-loading v-if="submitStatus == 1"></b-loading>
                 <div v-else-if="submitStatus == 2">
                     <b-form-group>
-                        <b-input-group>
+                        <b-input-group v-if="isEdit">
                             <b-input-group-prepend>
                                 <b-input-group-text><i class="fa fa-id-card-o pr-1"/> ID</b-input-group-text>
                             </b-input-group-prepend>
-                            <b-form-input type="number" placeholder="ID" :disabled="true" :value="editingItem.id" v-if="isEdit"/>
+                            <b-form-input type="number" placeholder="ID" :disabled="true" :value="processingItem.id"/>
                         </b-input-group>
                     </b-form-group>
                     <b-form-group>
@@ -18,7 +18,8 @@
                             <b-input-group-prepend>
                                 <b-input-group-text><i class="fa fa-envelope-o pr-1" />Email</b-input-group-text>
                             </b-input-group-prepend>
-                            <b-form-input type="email" placeholder="Email" :disabled="true" :value="editingItem.email" v-if="isEdit"/>
+                            <b-form-input type="email" placeholder="Email" :disabled="true" :value="processingItem.email" v-if="isEdit"/>
+                            <b-form-input type="email" placeholder="Email" v-model="processingItem.email" v-else/>
                         </b-input-group>
                     </b-form-group>
                     <b-form-group>
@@ -27,6 +28,7 @@
                                 <b-input-group-text><i class="fa fa-check-square-o pr-1" />Verified at</b-input-group-text>
                             </b-input-group-prepend>
                             <b-datepicker v-model="form.email_verified_at" v-if="isEdit"/>
+                            <b-datepicker v-model="processingItem.email_verified_at" v-else/>
                         </b-input-group>
                     </b-form-group>
                     <b-form-group
@@ -41,9 +43,8 @@
                                   type="checkbox"
                                   class="custom-control-input"
                                   value="1"
-                                  :checked="editingItem.roleIdArr.includes(1)"
+                                  :checked="processingItem.roleIdArr ? processingItem.roleIdArr.includes(1) : false"
                                   @change="setRole1Checkbox($event.target.value)"
-                                  v-if="isEdit"
                                 >
                                 <label class="custom-control-label" for="role-1-checkbox">
                                   Member
@@ -55,9 +56,8 @@
                                     type="checkbox"
                                     class="custom-control-input"
                                     value="2"
-                                    :checked="editingItem.roleIdArr.includes(2)"
+                                    :checked="processingItem.roleIdArr ? processingItem.roleIdArr.includes(2) : false"
                                     @change="setRole2Checkbox($event.target.value)"
-                                    v-if="isEdit"
                                 >
                                 <label class="custom-control-label" for="role-2-checkbox">
                                   Moderator
@@ -69,9 +69,8 @@
                                       type="checkbox"
                                       class="custom-control-input"
                                       value="3"
-                                      :checked="editingItem.roleIdArr.includes(3)"
+                                      :checked="processingItem.roleIdArr ? processingItem.roleIdArr.includes(3) : false"
                                       @change="setRole3Checkbox($event.target.value)"
-                                      v-if="isEdit"
                                   >
                                 <label class="custom-control-label" for="role-3-checkbox">
                                   Administrator
@@ -107,7 +106,7 @@
                     <b-button size="sm" class="btn-action" variant="danger" @click="deleteItems()" v-if="hasChecked">
                         <i class="fa fa-remove text-white" aria-hidden="true"></i> <span class="text-white">Delete</span>
                     </b-button>
-                    <b-button size="sm" class="btn-action" variant="primary" @click="createItem()">
+                    <b-button size="sm" class="btn-action" variant="primary" @click="prepareCreatingItem()" v-b-modal.edit-form-modal>
                         <i class="fa fa-file-o text-white" aria-hidden="true"></i> <span class="text-white">Create</span>
                     </b-button>
                 </div>
@@ -237,7 +236,7 @@ export default {
             perPage: window.localStorage.getItem('per_page') || 15,
             hasChecked: false,
             isEdit: false,
-            editingItem: null,
+            processingItem: {},
             form: {
                 role1: '',
                 role2: '',
@@ -267,22 +266,26 @@ export default {
                 this.hasChecked = false
             }
         },
-        createItem () {
-            alert('TODO: create item')
+        prepareCreatingItem () {
+            // Let modal know this is create action
+            this.isEdit = false;
+            this.submitStatus = 2
+            // Reset data
+            this.processingItem = {}
         },
         prepareEditingItem (item) {
+            // Let modal know this is edit action
+            this.isEdit = true;
             this.submitStatus = 2
             this.forceRerender()
-            this.editingItem = item
-            this.editingItem.roleIdArr = item.roles.map(role => role.id);
-            this.isEdit = true;
-            this.form.role1 = this.editingItem.roleIdArr.includes(1)
-            this.form.role2 = this.editingItem.roleIdArr.includes(2)
-            this.form.role3 = this.editingItem.roleIdArr.includes(3)
-            this.form.email_verified_at = this.editingItem.email_verified_at
+            this.processingItem = item
+            this.processingItem.roleIdArr = item.roles.map(role => role.id);
+            this.form.role1 = this.processingItem.roleIdArr.includes(1)
+            this.form.role2 = this.processingItem.roleIdArr.includes(2)
+            this.form.role3 = this.processingItem.roleIdArr.includes(3)
+            this.form.email_verified_at = this.processingItem.email_verified_at
         },
-        editItem (bvModalEvt) {
-            var vm = this
+        processItem (bvModalEvt) {
             // Prevent modal from closing
             bvModalEvt.preventDefault()
 
@@ -292,6 +295,15 @@ export default {
                 return;
             }
 
+            // Decide which logic to do
+            if (this.isEdit) {
+                this.editItem();
+            } else {
+                this.createItem();
+            }
+        },
+        editItem () {
+            var vm = this
             // Prepare data
             let roleIdsSeq = ''
             if ($('#role-1-checkbox').prop("checked")){
@@ -303,11 +315,11 @@ export default {
             if ($('#role-3-checkbox').prop("checked")){
                 roleIdsSeq += '3,'
             }
-            vm.editingItem.role_ids = roleIdsSeq
-            vm.editingItem.email_verified_at = this.form.email_verified_at
+            vm.processingItem.role_ids = roleIdsSeq
+            vm.processingItem.email_verified_at = this.form.email_verified_at
 
             // Broadcast edit_item event
-            vm.$emit('edit_item', vm.editingItem, this.currentPage, this.perPage)
+            vm.$emit('edit_item', vm.processingItem, this.currentPage, this.perPage)
         },
         deleteItem (item) {
             var vm = this

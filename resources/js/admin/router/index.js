@@ -6,7 +6,7 @@ import Full from '@/containers/Full'
 
 // Tools
 import Dashboard from '@/views/tools/Dashboard'
-import Users from '@/views/tools/Users'
+import Users from '@/views/tools/users/Users'
 
 // Views - Pages
 import Page403 from '@/views/pages/Page403'

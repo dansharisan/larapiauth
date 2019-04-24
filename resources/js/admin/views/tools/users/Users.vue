@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import cTable from '../base/Table.vue'
-import UserAPI from '../../api/user.js'
+import cTable from './Table.vue'
+import UserAPI from '../../../api/user.js'
 export default {
     name      : 'Users',
     components: { cTable },
