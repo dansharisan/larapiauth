@@ -2,7 +2,7 @@
     <b-card :header="caption" header-class="text-left" class="text-center">
         <b-loading v-if="loadStatus==1"></b-loading>
         <div v-else-if="loadStatus == 2">
-            <b-modal id="edit-form-modal" centered title="Edit" @ok="editItem" ref="edit-form-modal">
+            <b-modal id="edit-form-modal" centered title="Edit" @ok="editItem" ref="edit-form-modal" :key="editFormModal">
                 <b-form-group>
                     <b-input-group>
                         <b-input-group-prepend>
@@ -40,7 +40,6 @@
                               class="custom-control-input"
                               value="1"
                               :checked="editingItem.roleIdArr.includes(1)"
-                              :state="$v.form.role1 | state"
                               @change="setRole1Checkbox($event.target.value)"
                               v-if="isEdit"
                             >
@@ -55,7 +54,6 @@
                                 class="custom-control-input"
                                 value="2"
                                 :checked="editingItem.roleIdArr.includes(2)"
-                                :state="$v.form.role2 | state"
                                 @change="setRole2Checkbox($event.target.value)"
                                 v-if="isEdit"
                             >
@@ -70,7 +68,6 @@
                                   class="custom-control-input"
                                   value="3"
                                   :checked="editingItem.roleIdArr.includes(3)"
-                                  :state="$v.form.role3 | state"
                                   @change="setRole3Checkbox($event.target.value)"
                                   v-if="isEdit"
                               >
@@ -238,6 +235,7 @@ export default {
                 role2: '',
                 role3: '',
             },
+            editFormModal: 0
         }
     },
     methods: {
@@ -264,6 +262,7 @@ export default {
             alert('TODO: create item')
         },
         prepareEditingItem (item) {
+            this.forceRerender()
             this.editingItem = item
             this.editingItem.roleIdArr = item.roles.map(role => role.id);
             this.isEdit = true;
@@ -371,6 +370,9 @@ export default {
         onChangePerPage (newPerPage) {
             // Remember user's preference for per_page
             window.localStorage.setItem('per_page', newPerPage)
+        },
+        forceRerender() {
+            this.editFormModal += 1;
         }
     },
     watch: {

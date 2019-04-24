@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 import Datepicker from 'vuejs-datepicker'
-import { id } from 'vuejs-datepicker/dist/locale'
+import { en } from 'vuejs-datepicker/dist/locale'
 import Sweetalert from 'vue-sweetalert2'
 import Snotify, { SnotifyPosition } from 'vue-snotify'
 import Vuelidate from 'vuelidate'
@@ -48,7 +48,7 @@ Vue.component('b-datepicker', {
     },
     language: {
       type   : Object,
-      default: () => id,
+      default: () => en,
     },
   },
 })
