@@ -11,6 +11,7 @@
                 @delete_item="deleteUser"
                 @delete_items="deleteUsers"
                 @edit_item="editUser"
+                @create_item="createUser"
                 hover
                 striped
                 bordered
@@ -156,6 +157,27 @@ export default {
             var vm = this
             vm.submitStatus = 1
             UserAPI.editUser(userItem.id, userItem.email_verified_at, userItem.role_ids)
+            .then(response => {
+                if (response.data.success) {
+                    vm.submitStatus = 2
+                    vm.getUsers(currentPage, perPage)
+                    vm.$snotify.success(response.data.message)
+                } else {
+                    vm.submitStatus = 3
+                    vm.$snotify.error(response.data.message)
+                }
+            })
+            .catch(error => {
+                vm.submitStatus = 3
+                if (error && error.response && error.response.data && error.response.data.message) {
+                    vm.$snotify.error(error.response.data.message)
+                }
+            })
+        },
+        createUser(userItem, currentPage, perPage) {
+            var vm = this
+            vm.submitStatus = 1
+            UserAPI.createUser(userItem.email, userItem.password, userItem.password, userItem.role_ids)
             .then(response => {
                 if (response.data.success) {
                     vm.submitStatus = 2

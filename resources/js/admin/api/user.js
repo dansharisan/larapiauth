@@ -63,4 +63,18 @@ export default {
             role_ids: roleIdsSeq
         });
     },
+
+    /*
+    POST /api/users/
+    To create a new user
+    */
+    createUser: function(email, password, password_confirmation) {
+        return axios.post(APP_CONFIG.API_URL + '/users',
+        {
+            email: email,
+            password: password,
+            password_confirmation: password_confirmation,
+            role_ids: role_ids
+        });
+    },
 }

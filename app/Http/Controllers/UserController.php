@@ -307,8 +307,6 @@ class UserController extends Controller
             // Update user data
             $user->fill($request->all());
             $verifiedAt = $request->input('email_verified_at');
-            //$time = strtotime($verifiedAt);
-            //$dateInLocal = date("Y-m-d H:i:s", $time);
             $user->email_verified_at = date("Y-m-d H:i:s", strtotime($verifiedAt));
             $user->save();
 
@@ -331,5 +329,102 @@ class UserController extends Controller
         }
 
         return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Edited user successfully.', 'data' => $user], AppResponse::HTTP_OK);
+    }
+
+    /**
+    * @OA\Post(
+    *         path="/api/users",
+    *         tags={"Users"},
+    *         summary="Create an user",
+    *         description="Create an user",
+    *         operationId="create-user",
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=422,
+    *             description="Invalid input or email taken"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    *         @OA\RequestBody(
+    *             required=true,
+    *             @OA\MediaType(
+    *                 mediaType="application/x-www-form-urlencoded",
+    *                 @OA\Schema(
+    *                     type="object",
+    *                     @OA\Property(
+    *                         property="email",
+    *                         description="Email",
+    *                         type="string",
+    *                     ),
+    *                     @OA\Property(
+    *                         property="password",
+    *                         description="Password",
+    *                         type="string",
+    *                         format="password"
+    *                     ),
+    *                     @OA\Property(
+    *                         property="email_verified_at",
+    *                         description="Email verified date",
+    *                         type="string",
+    *                         format="date",
+    *                     ),
+    *                     @OA\Property(
+    *                         property="role_ids",
+    *                         description="Role IDs",
+    *                         type="array",
+    *                         @OA\Items(
+    *                             type="integer"
+    *                         ),
+    *                     ),
+    *                 )
+    *             )
+    *         )
+    * )
+    */
+    public function store(Request $request)
+    {
+        $roleIds = $request->input('role_ids');
+        $verifiedAt = $request->input('email_verified_at');
+        // Validate input data
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string',
+            'role_ids' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'errors'=>$validator->errors()], AppResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Create user
+        try {
+            DB::beginTransaction();
+            $user = new User([
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'email_verified_at' => date("Y-m-d H:i:s", strtotime($verifiedAt))
+            ]);
+            $user->save();
+
+            // Add new roles
+            $roleIdArr = preg_split('/,/', $roleIds, null, PREG_SPLIT_NO_EMPTY);
+            if ($roleIdArr && is_array($roleIdArr) && !empty($roleIdArr[0]) && count($roleIdArr) > 0) {
+                foreach ($roleIdArr as $roleId) {
+                    $role = Role::find($roleId);
+                    $user->assignRole($role->name);
+                }
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK);
     }
 }
