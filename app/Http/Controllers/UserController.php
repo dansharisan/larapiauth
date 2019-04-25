@@ -10,6 +10,7 @@ use App\Enums\RoleType;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 // use Carbon\Carbon;
+use Validator;
 
 class UserController extends Controller
 {
