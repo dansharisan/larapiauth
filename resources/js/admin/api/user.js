@@ -68,13 +68,14 @@ export default {
     POST /api/users/
     To create a new user
     */
-    createUser: function(email, password, password_confirmation, role_ids) {
+    createUser: function(email, verifiedAt, password, password_confirmation, role_ids) {
         return axios.post(APP_CONFIG.API_URL + '/users',
         {
             email: email,
             password: password,
             password_confirmation: password_confirmation,
-            role_ids: role_ids
+            role_ids: role_ids,
+            email_verified_at: verifiedAt
         });
     },
 }

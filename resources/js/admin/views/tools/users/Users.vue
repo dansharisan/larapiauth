@@ -21,6 +21,7 @@
                 :fields="fields"
                 :loadStatus="loadStatus"
                 :submitStatus="submitStatus"
+                :message="message"
                 />
             </b-col>
         </b-row>
@@ -47,7 +48,8 @@ export default {
                 { key: 'actions' }
             ],
             loadStatus: 0,
-            submitStatus: 2
+            submitStatus: 2,
+            message: '',
         }
     },
     methods: {
@@ -177,22 +179,21 @@ export default {
         createUser(userItem, currentPage, perPage) {
             var vm = this
             vm.submitStatus = 1
-            UserAPI.createUser(userItem.email, userItem.password, userItem.password, userItem.role_ids)
+            UserAPI.createUser(userItem.email, userItem.email_verified_at, userItem.password, userItem.password, userItem.role_ids)
             .then(response => {
                 if (response.data.success) {
                     vm.submitStatus = 2
                     vm.getUsers(currentPage, perPage)
                     vm.$snotify.success(response.data.message)
                 } else {
-                    vm.submitStatus = 3
+                    vm.submitStatus = 2
                     vm.$snotify.error(response.data.message)
                 }
             })
             .catch(error => {
                 vm.submitStatus = 3
-                if (error && error.response && error.response.data && error.response.data.message) {
-                    vm.$snotify.error(error.response.data.message)
-                }
+                vm.message = error.response.data.message
+                vm.$snotify.error("Failed to create user.")
             })
         }
     },

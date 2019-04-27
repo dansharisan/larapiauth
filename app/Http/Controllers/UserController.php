@@ -391,6 +391,7 @@ class UserController extends Controller
     {
         $roleIds = $request->input('role_ids');
         $verifiedAt = $request->input('email_verified_at');
+
         // Validate input data
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|unique:users',
@@ -407,8 +408,9 @@ class UserController extends Controller
             $user = new User([
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
-                'email_verified_at' => date("Y-m-d H:i:s", strtotime($verifiedAt))
+                'active' => 1
             ]);
+            $user->email_verified_at = date("Y-m-d H:i:s", strtotime($verifiedAt));
             $user->save();
 
             // Add new roles
@@ -426,6 +428,6 @@ class UserController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK);
+        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Created user successfully.', 'data' => $user], AppResponse::HTTP_OK);
     }
 }

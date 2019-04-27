@@ -4,7 +4,10 @@ processingItem<template>
         <div v-else-if="loadStatus == 2">
             <b-modal id="edit-form-modal" centered :title="isEdit ? 'Edit user' : 'Create user'" @ok="processItem" @hide="resetModal" ref="edit-form-modal" :key="editFormModal">
                 <b-loading v-if="submitStatus == 1"></b-loading>
-                <div v-else-if="submitStatus == 2">
+                <div v-else>
+                    <div class="invalid-feedback d-block" v-if="message">
+                        {{ message }}
+                    </div>
                     <b-form-group>
                         <b-input-group v-if="isEdit">
                             <b-input-group-prepend>
@@ -111,7 +114,7 @@ processingItem<template>
                           </div>
                       </b-form-group>
                   </div>
-                  <p v-else class="text-center mb-0">Data submit error.</p>
+                  <!-- <p v-else class="text-center mb-0">Data submit error.</p> -->
             </b-modal>
             <div class="row justify-content-between">
                 <div class="col-4">
@@ -248,6 +251,10 @@ export default {
         submitStatus: {
             type: Number,
             default: 2
+        },
+        message: {
+            type : String,
+            default: '',
         }
     },
     validations () {
@@ -366,6 +373,10 @@ export default {
                 roleIdsSeq += '3,'
             }
             vm.processingItem.role_ids = roleIdsSeq
+            vm.processingItem.email = vm.form.email
+            vm.processingItem.email_verified_at = vm.form.email_verified_at
+            vm.processingItem.password = vm.form.password
+
             // Broadcast edit_item event
             vm.$emit('create_item', vm.processingItem, this.currentPage, this.perPage)
         },
