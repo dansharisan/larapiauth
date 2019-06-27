@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\AppResponse;
-use App\User;
+use App\Models\User;
 use App\Enums\ActiveStatus;
 use App\Enums\RoleType;
 use Illuminate\Support\Facades\DB;

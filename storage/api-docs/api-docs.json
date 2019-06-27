@@ -163,7 +163,7 @@
                         "description": "Successful operation"
                     },
                     "400": {
-                        "description": "Invalid token"
+                        "description": "Invalid input data"
                     },
                     "500": {
                         "description": "Server error"
@@ -200,10 +200,10 @@
                         "description": "Successful operation"
                     },
                     "400": {
-                        "description": "Email not existing"
+                        "description": "Invalid input data"
                     },
                     "422": {
-                        "description": "Invalid input"
+                        "description": "Validation error"
                     },
                     "500": {
                         "description": "Server error"
@@ -235,7 +235,7 @@
                         "description": "Successful operation"
                     },
                     "400": {
-                        "description": "Invalid token"
+                        "description": "Invalid input data"
                     },
                     "500": {
                         "description": "Server error"
@@ -289,7 +289,7 @@
                         "description": "Password reset token invalid or email not existing"
                     },
                     "422": {
-                        "description": "Invalid input"
+                        "description": "Invalid input data"
                     },
                     "500": {
                         "description": "Server error"
@@ -379,6 +379,58 @@
                 "responses": {
                     "200": {
                         "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create an user",
+                "description": "Create an user",
+                "operationId": "create-user",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "Email",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "Password",
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "email_verified_at": {
+                                        "description": "Email verified date",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "role_ids": {
+                                        "description": "Role IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "422": {
+                        "description": "Invalid input or email taken"
                     },
                     "500": {
                         "description": "Server error"
