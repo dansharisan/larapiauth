@@ -329,7 +329,7 @@ class UserController extends Controller
                                 'code' => Error::USER0003,
                                 'message' => Error::getDescription(Error::USER0003)
                             ]
-                ], Response::HTTP_UNPROCESSABLE_ENTITY
+                ], Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -448,7 +448,16 @@ class UserController extends Controller
             'role_ids' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json(['validation'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Create user

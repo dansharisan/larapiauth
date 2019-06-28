@@ -21,4 +21,5 @@ final class Error extends Enum implements LocalizedEnum
     const USER0002 = "USER0002";
     const USER0003 = "USER0003";
     const GENR0001 = "GENR0001";
+    const GENR0002 = "GENR0002";
 }

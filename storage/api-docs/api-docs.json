@@ -50,7 +50,7 @@
                         "description": "Successful operation"
                     },
                     "422": {
-                        "description": "Invalid input or email taken"
+                        "description": "Validation error"
                     },
                     "500": {
                         "description": "Server error"
@@ -92,7 +92,7 @@
                         "description": "Successful operation"
                     },
                     "422": {
-                        "description": "Invalid input"
+                        "description": "Validation error"
                     },
                     "403": {
                         "description": "Wrong combination of email and password or email not verified"
@@ -112,8 +112,8 @@
                 "description": "Logout an user",
                 "operationId": "logout",
                 "responses": {
-                    "200": {
-                        "description": "Successful operation"
+                    "204": {
+                        "description": "Successful operation with no content in return"
                     },
                     "500": {
                         "description": "Server error"
@@ -196,8 +196,8 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "Successful operation"
+                    "204": {
+                        "description": "Successful operation with no content in return"
                     },
                     "400": {
                         "description": "Invalid input data"
@@ -289,7 +289,7 @@
                         "description": "Password reset token invalid or email not existing"
                     },
                     "422": {
-                        "description": "Invalid input data"
+                        "description": "Validation error"
                     },
                     "500": {
                         "description": "Server error"
@@ -337,7 +337,7 @@
                         "description": "Successful operation"
                     },
                     "422": {
-                        "description": "Invalid input"
+                        "description": "Validation error"
                     },
                     "403": {
                         "description": "Wrong combination of email and password or email not verified"
@@ -458,8 +458,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Successful operation"
+                    "204": {
+                        "description": "Successful operation with no content in return"
                     },
                     "500": {
                         "description": "Server error"
@@ -487,8 +487,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Successful operation"
+                    "204": {
+                        "description": "Successful operation with no content in return"
                     },
                     "500": {
                         "description": "Server error"
@@ -516,8 +516,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Successful operation"
+                    "204": {
+                        "description": "Successful operation with no content in return"
                     },
                     "500": {
                         "description": "Server error"
@@ -604,8 +604,8 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "Successful operation"
+                    "204": {
+                        "description": "Successful operation with no content in return"
                     },
                     "422": {
                         "description": "Invalid input"

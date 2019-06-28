@@ -24,7 +24,7 @@ const actions = {
         UserAPI.getUser()
         .then((response) => {
             commit('userLoadStatus', 2)
-            commit('user', response.data.data)
+            commit('user', response.data.user)
         })
         .catch( function( e ) {
             commit('userLoadStatus', 3)
@@ -44,7 +44,7 @@ const actions = {
             AuthAPI.getAccessToken(credential.email, credential.password)
             .then((response) => {
                 commit('userLoadStatus', 2)
-                commit('user', response.data.data)
+                commit('user', response.data.user)
                 // Return successful response
                 resolve(response)
             })

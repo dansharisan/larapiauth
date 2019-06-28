@@ -17,6 +17,7 @@ return [
         Error::USER0001 => "Invalid user ID",
         Error::USER0002 => "Invalid user ID string sequence",
         Error::USER0003 => "No role was selected",
-        Error::GENR0001 => "Server error"
+        Error::GENR0001 => "Server error",
+        Error::GENR0002 => "Invalid input data"
     ],
 ];

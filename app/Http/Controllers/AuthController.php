@@ -73,7 +73,16 @@ class AuthController extends Controller
             'password_confirmation' => 'required|string|same:password'
         ]);
         if ($validator->fails()) {
-            return response()->json(['validation'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Create user
@@ -146,7 +155,16 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         if ($validator->fails()) {
-            return response()->json(['validation'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $credentials = request(['email', 'password']);
@@ -319,7 +337,16 @@ class AuthController extends Controller
             'email' => 'required|string|email',
         ]);
         if ($validator->fails()) {
-            return response()->json(['validation'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -475,7 +502,16 @@ class AuthController extends Controller
             'token' => 'required|string'
         ]);
         if ($validator->fails()) {
-            return response()->json(['validation'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $passwordReset = PasswordReset::where([
@@ -579,7 +615,16 @@ class AuthController extends Controller
             'new_password' => 'required|string|confirmed'
         ]);
         if ($validator->fails()) {
-            return response()->json(['validation'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Check if the combination of email and password is correct, if it is then proceed, if no, throw error
