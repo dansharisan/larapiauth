@@ -84,18 +84,20 @@ export default {
             vm.loadStatus = 1
             UserAPI.deleteUser(userId)
             .then(response => {
-                if (response.data.success) {
-                    vm.getUsers(currentPage, perPage)
-                    vm.$snotify.success(response.data.message)
-                } else {
-                    vm.loadStatus = 3
-                    vm.$snotify.error(response.data.message)
-                }
+                vm.getUsers(currentPage, perPage)
+                vm.$snotify.success("Deleted successfully")
             })
             .catch(error => {
-                vm.loadStatus = 3
-                if (error && error.response && error.response.data && error.response.data.message) {
-                    vm.$snotify.error(error.response.data.message)
+                // Return back loadStatus value
+                if (vm.tableData) {
+                    vm.loadStatus = 2
+                } else {
+                    vm.loadStatus = 3
+                }
+                if (error && error.response) {
+                    vm.$snotify.error("Failed to delete this user: " + error.response.data.error.message)
+                } else {
+                    vm.$snotify.error("Network error")
                 }
             })
         },
@@ -104,18 +106,20 @@ export default {
             vm.loadStatus = 1
             UserAPI.banUser(userId)
             .then(response => {
-                if (response.data.success) {
-                    vm.getUsers(currentPage, perPage)
-                    vm.$snotify.success(response.data.message)
-                } else {
-                    vm.loadStatus = 3
-                    vm.$snotify.error(response.data.message)
-                }
+                vm.getUsers(currentPage, perPage)
+                vm.$snotify.success("Banned successfully")
             })
             .catch(error => {
-                vm.loadStatus = 3
-                if (error && error.response && error.response.data && error.response.data.message) {
-                    vm.$snotify.error(error.response.data.message)
+                // Return back loadStatus value
+                if (vm.tableData) {
+                    vm.loadStatus = 2
+                } else {
+                    vm.loadStatus = 3
+                }
+                if (error && error.response) {
+                    vm.$snotify.error("Failed to ban this user: " + error.response.data.error.message)
+                } else {
+                    vm.$snotify.error("Network error")
                 }
             })
         },
@@ -124,18 +128,20 @@ export default {
             vm.loadStatus = 1
             UserAPI.unbanUser(userId)
             .then(response => {
-                if (response.data.success) {
-                    vm.getUsers(currentPage, perPage)
-                    vm.$snotify.success(response.data.message)
-                } else {
-                    vm.loadStatus = 3
-                    vm.$snotify.error(response.data.message)
-                }
+                vm.getUsers(currentPage, perPage)
+                vm.$snotify.success("Unbanned successfully")
             })
             .catch(error => {
-                vm.loadStatus = 3
-                if (error && error.response && error.response.data && error.response.data.message) {
-                    vm.$snotify.error(error.response.data.message)
+                // Return back loadStatus value
+                if (vm.tableData) {
+                    vm.loadStatus = 2
+                } else {
+                    vm.loadStatus = 3
+                }
+                if (error && error.response) {
+                    vm.$snotify.error("Failed to unban this user: " + error.response.data.error.message)
+                } else {
+                    vm.$snotify.error("Network error")
                 }
             })
         },
@@ -144,12 +150,8 @@ export default {
             vm.loadStatus = 1
             UserAPI.getUsers(page, perPage)
             .then(response => {
-                if (response.data.success) {
-                    vm.tableData = response.data.data
-                    vm.loadStatus = 2
-                } else {
-                    vm.loadStatus = 3
-                }
+                vm.tableData = response.data.users
+                vm.loadStatus = 2
             })
             .catch(error => {
                 vm.loadStatus = 3

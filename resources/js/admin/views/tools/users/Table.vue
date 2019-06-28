@@ -1,6 +1,6 @@
 processingItem<template>
     <b-card :header="caption" header-class="text-left" class="text-center">
-        <b-loading v-if="loadStatus==1"></b-loading>
+        <b-loading v-if="loadStatus == 1"></b-loading>
         <div v-else-if="loadStatus == 2">
             <b-modal id="edit-form-modal" centered :title="isEdit ? 'Edit user' : 'Create user'" @ok="processItem" @hide="resetModal" ref="edit-form-modal" :key="editFormModal">
                 <b-loading v-if="submitStatus == 1"></b-loading>
@@ -189,7 +189,7 @@ processingItem<template>
                 </template>
             </b-table>
         </div>
-        <p v-else class="text-center mb-0">Data load error.</p>
+        <p v-else-if="loadStatus == 3" class="text-center mb-0">Data load error.</p>
         <nav v-if="loadStatus == 2">
             <b-pagination
             v-model="currentPage"
