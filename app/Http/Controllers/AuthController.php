@@ -1,19 +1,19 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Validator;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Enums\Error;
+use App\Enums\RoleType;
+use Illuminate\Http\Request;
+use App\Models\PasswordReset;
+use Illuminate\Support\Facades\Auth;
 use App\Notifications\RegisterActivate;
 use App\Notifications\PasswordResetRequest;
 use App\Notifications\PasswordResetSuccess;
 use App\Notifications\PasswordChangeSuccess;
-use App\Models\PasswordReset;
 use Symfony\Component\HttpFoundation\Response as Response;
-use Validator;
-use App\Enums\RoleType;
 
 class AuthController extends Controller
 {
@@ -30,7 +30,7 @@ class AuthController extends Controller
     *         ),
     *         @OA\Response(
     *             response=422,
-    *             description="Invalid input or email taken"
+    *             description="Validation error"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -73,7 +73,7 @@ class AuthController extends Controller
             'password_confirmation' => 'required|string|same:password'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['validation'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Create user
@@ -106,7 +106,7 @@ class AuthController extends Controller
     *         ),
     *         @OA\Response(
     *             response=422,
-    *             description="Invalid input"
+    *             description="Validation error"
     *         ),
     *         @OA\Response(
     *             response=403,
@@ -146,7 +146,7 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['validation'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $credentials = request(['email', 'password']);
@@ -179,8 +179,8 @@ class AuthController extends Controller
     *         description="Logout an user",
     *         operationId="logout",
     *         @OA\Response(
-    *             response=200,
-    *             description="Successful operation"
+    *             response=204,
+    *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -281,8 +281,8 @@ class AuthController extends Controller
     *         description="Generate password reset token and send that token to user through mail",
     *         operationId="createPasswordResetToken",
     *         @OA\Response(
-    *             response=200,
-    *             description="Successful operation"
+    *             response=204,
+    *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
     *             response=400,
@@ -319,7 +319,7 @@ class AuthController extends Controller
             'email' => 'required|string|email',
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['validation'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -426,7 +426,7 @@ class AuthController extends Controller
     *         ),
     *         @OA\Response(
     *             response=422,
-    *             description="Invalid input data"
+    *             description="Validation error"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -475,7 +475,7 @@ class AuthController extends Controller
             'token' => 'required|string'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['validation'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $passwordReset = PasswordReset::where([
@@ -529,7 +529,7 @@ class AuthController extends Controller
     *         ),
     *         @OA\Response(
     *             response=422,
-    *             description="Invalid input"
+    *             description="Validation error"
     *         ),
     *         @OA\Response(
     *             response=403,
@@ -579,7 +579,7 @@ class AuthController extends Controller
             'new_password' => 'required|string|confirmed'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['validation'=>$validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Check if the combination of email and password is correct, if it is then proceed, if no, throw error

@@ -14,5 +14,9 @@ return [
         Error::AUTH0008 => "Expired access token",
         Error::AUTH0009 => "Blacklisted access token",
         Error::AUTH0010 => "Unauthorized request",
+        Error::USER0001 => "Invalid user ID",
+        Error::USER0002 => "Invalid user ID string sequence",
+        Error::USER0003 => "No role was selected",
+        Error::GENR0001 => "Server error"
     ],
 ];
