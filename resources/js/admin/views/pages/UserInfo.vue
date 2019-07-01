@@ -84,13 +84,8 @@ export default {
             var vueComponent = this
             AuthAPI.logout()
             .then(response => {
-                if (response.status >= 200 && response.status < 300) {
-                    vueComponent.$store.dispatch('user/logout')
-                    window.location.href = "/"
-                } else {
-                    // TODO: handle error
-                    console.log(JSON.stringify(response))
-                }
+                vueComponent.$store.dispatch('user/logout')
+                window.location.href = "/"
             })
             .catch(function(error) {
                 // TODO: handle error
