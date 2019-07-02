@@ -29,7 +29,7 @@
                                             <i class="icon-lock" />
                                         </b-input-group-text>
                                     </b-input-group-prepend>
-                                    <b-input type="password" class="form-control" v-model="form.password" :state="$v.form.password | state" placeholder="New password"/>
+                                    <b-input type="password" class="form-control" v-model="form.password" :state="$v.form.password | state" placeholder="New password" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="$v.form.password.$invalid && validation && validation.password">
                                         {{ validation.password[0] }}
                                     </div>
@@ -40,7 +40,7 @@
                                             <i class="icon-lock" />
                                         </b-input-group-text>
                                     </b-input-group-prepend>
-                                    <b-input type="password" class="form-control" v-model="form.password_confirmation" :state="$v.form.password_confirmation | state" placeholder="New password confirmation"/>
+                                    <b-input type="password" class="form-control" v-model="form.password_confirmation" :state="$v.form.password_confirmation | state" placeholder="New password confirmation" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="$v.form.password_confirmation.$invalid &&  validation && validation.password_confirmation">
                                         {{ validation.password_confirmation[0] }}
                                     </div>
