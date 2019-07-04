@@ -14,10 +14,8 @@
                                     {{ this.notification.message }}
                                 </div>
                                 <b-input-group class="mb-3">
-                                    <b-input-group-prepend>
-                                        <b-input-group-text>
-                                            <i class="icon-envelope-open" />
-                                        </b-input-group-text>
+                                    <b-input-group-prepend is-text>
+                                        <i class="icon-envelope-open" />
                                     </b-input-group-prepend>
                                     <b-input v-model="form.email" :state="$v.form.email | state" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="$v.form.email.$invalid && validation && validation.email">

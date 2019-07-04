@@ -37,7 +37,8 @@ export default {
             AuthAPI.logout()
             .then(response => {
                 vueComponent.$store.dispatch('user/logout')
-                window.location.href = "/"
+                //window.location.href = "/"
+                vueComponent.$router.push({ name: 'Login' })
             })
             .catch(function(error) {
                 // TODO: handle error

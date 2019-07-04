@@ -14,10 +14,8 @@
                                     {{ this.notification.message }}
                                 </div>
                                 <b-input-group class="mb-3">
-                                    <b-input-group-prepend>
-                                        <b-input-group-text>
-                                            <i class="icon-envelope-open" />
-                                        </b-input-group-text>
+                                    <b-input-group-prepend is-text>
+                                        <i class="icon-envelope-open" />
                                     </b-input-group-prepend>
                                     <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="$v.form.email.$invalid && validation && validation.email">
@@ -25,10 +23,8 @@
                                     </div>
                                 </b-input-group>
                                 <b-input-group class="mb-4">
-                                    <b-input-group-prepend>
-                                        <b-input-group-text>
-                                            <i class="icon-lock" />
-                                        </b-input-group-text>
+                                    <b-input-group-prepend is-text>
+                                        <i class="icon-lock" />
                                     </b-input-group-prepend>
                                     <b-input v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="$v.form.password.$invalid && validation && validation.password">

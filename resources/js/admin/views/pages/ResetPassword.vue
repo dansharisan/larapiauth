@@ -16,18 +16,14 @@
                                 <!-- <div v-bind:class="{'alert alert-success': (this.resetPasswordRequest.status == 2), 'alert alert-danger': !(this.resetPasswordRequest.status == 2)}" id="message" v-if="this.validation.message && this.resetPasswordRequest.status==2" role="alert">{{ this.validation.message }}</div>
                                 <div v-bind:class="{'alert alert-success': (this.findTokenRequest.status == 2), 'alert alert-danger': !(this.findTokenRequest.status == 2)}" id="message" v-else-if="this.validation.message" role="alert">{{ this.validation.message }}</div> -->
                                 <b-input-group class="mb-3" v-if="this.findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2">
-                                    <b-input-group-prepend>
-                                        <b-input-group-text>
-                                            <i class="icon-envelope-open" />
-                                        </b-input-group-text>
+                                    <b-input-group-prepend is-text>
+                                        <i class="icon-envelope-open" />
                                     </b-input-group-prepend>
                                     <b-input type="text" class="form-control" :value="form.email" disabled/>
                                 </b-input-group>
                                 <b-input-group class="mb-3" v-if="this.findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2">
-                                    <b-input-group-prepend>
-                                        <b-input-group-text>
+                                    <b-input-group-prepend is-text>
                                             <i class="icon-lock" />
-                                        </b-input-group-text>
                                     </b-input-group-prepend>
                                     <b-input type="password" class="form-control" v-model="form.password" :state="$v.form.password | state" placeholder="New password" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="$v.form.password.$invalid && validation && validation.password">
@@ -35,10 +31,8 @@
                                     </div>
                                 </b-input-group>
                                 <b-input-group class="mb-3" v-if="this.findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2">
-                                    <b-input-group-prepend>
-                                        <b-input-group-text>
+                                    <b-input-group-prepend is-text>
                                             <i class="icon-lock" />
-                                        </b-input-group-text>
                                     </b-input-group-prepend>
                                     <b-input type="password" class="form-control" v-model="form.password_confirmation" :state="$v.form.password_confirmation | state" placeholder="New password confirmation" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="$v.form.password_confirmation.$invalid &&  validation && validation.password_confirmation">

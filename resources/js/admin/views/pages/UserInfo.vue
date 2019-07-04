@@ -14,8 +14,8 @@
                                 Your profile is as below:
                             </p>
                             <b-input-group class="mb-3">
-                                <b-input-group-prepend>
-                                    <b-input-group-text>Email</b-input-group-text>
+                                <b-input-group-prepend is-text>
+                                        Email
                                 </b-input-group-prepend>
                                 <input
                                 type="text"
@@ -26,8 +26,8 @@
                                 />
                             </b-input-group>
                             <b-input-group class="mb-3">
-                                <b-input-group-prepend>
-                                    <b-input-group-text>Roles</b-input-group-text>
+                                <b-input-group-prepend is-text>
+                                    Roles
                                 </b-input-group-prepend>
                                 <input
                                 type="text"
@@ -85,7 +85,8 @@ export default {
             AuthAPI.logout()
             .then(response => {
                 vueComponent.$store.dispatch('user/logout')
-                window.location.href = "/"
+                //window.location.href = "/"
+                vueComponent.$router.push({ name: 'Login' })
             })
             .catch(function(error) {
                 // TODO: handle error

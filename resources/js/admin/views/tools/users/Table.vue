@@ -10,19 +10,20 @@
                     </div>
                     <b-form-group>
                         <b-input-group v-if="isEdit">
-                            <b-input-group-prepend>
-                                <b-input-group-text><i class="fa fa-id-card-o pr-1"/> ID</b-input-group-text>
+                            <b-input-group-prepend is-text class="item-header-text">
+                                ID
                             </b-input-group-prepend>
                             <b-form-input type="number" placeholder="ID" :disabled="true" :value="processingItem.id"/>
                         </b-input-group>
                     </b-form-group>
                     <b-form-group>
                         <b-input-group>
-                            <b-input-group-prepend>
-                                <b-input-group-text><i class="fa fa-envelope-o pr-1" />Email</b-input-group-text>
+                            <b-input-group-prepend is-text :class="isEdit ? 'item-header-text' : ''">
+                                <span v-if="isEdit">Email</span>
+                                <i class="fa fa-envelope-o pr-1" v-else/>
                             </b-input-group-prepend>
                             <b-form-input type="email" placeholder="Email" :disabled="true" :value="processingItem.email" v-if="isEdit"/>
-                            <b-form-input type="email" placeholder="Email" :state="$v.form.email | state" v-model="form.email" v-else/>
+                            <b-form-input type="email" placeholder="Email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" v-model="form.email" v-else/>
                         </b-input-group>
                         <div class="row">
                             <div class="col-3 d-block">
@@ -34,10 +35,10 @@
                     </b-form-group>
                     <b-form-group v-if="!isEdit">
                         <b-input-group>
-                            <b-input-group-prepend>
-                                <b-input-group-text><i class="fa fa-key pr-1" />Password</b-input-group-text>
+                            <b-input-group-prepend is-text>
+                                <i class="fa fa-key pr-1" />
                             </b-input-group-prepend>
-                            <b-form-input type="password" placeholder="Password" :state="$v.form.password | state" v-model="form.password"/>
+                            <b-form-input type="password" placeholder="Password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" v-model="form.password"/>
                         </b-input-group>
                         <div class="row">
                             <div class="col-3 d-block">
@@ -49,11 +50,12 @@
                     </b-form-group>
                     <b-form-group>
                         <b-input-group>
-                            <b-input-group-prepend>
-                                <b-input-group-text><i class="fa fa-check-square-o pr-1" />Verified at</b-input-group-text>
+                            <b-input-group-prepend is-text :class="isEdit ? 'item-header-text' : ''">
+                                <template v-if="isEdit">Verified at</template>
+                                <i class="fa fa-check-square-o pr-1" v-else/>
                             </b-input-group-prepend>
-                            <b-datepicker v-model="form.email_verified_at" v-if="isEdit"/>
-                            <b-datepicker v-model="form.email_verified_at" :state="$v.form.email_verified_at | state" v-else/>
+                            <b-datepicker v-model="form.email_verified_at" placeholder="Verified at" v-if="isEdit"/>
+                            <b-datepicker v-model="form.email_verified_at" :state="$v.form.email_verified_at | state" placeholder="Verified at" v-else/>
                         </b-input-group>
                         <div class="row">
                             <div class="col-3 d-block">
@@ -128,8 +130,8 @@
                         value="Please select"
                         class="col-2"
                       />
-                      <b-input-group-append>
-                          <b-input-group-text>items per page</b-input-group-text>
+                      <b-input-group-append is-text>
+                          items per page
                       </b-input-group-append>
                     </b-input-group>
                 </div>
