@@ -1,8 +1,8 @@
-processingItem<template>
+<template>
     <b-card :header="caption" header-class="text-left" class="text-center">
         <b-loading v-if="loadStatus == 1"></b-loading>
         <div v-else-if="loadStatus == 2">
-            <b-modal id="edit-form-modal" centered :title="isEdit ? 'Edit user' : 'Create user'" @ok="processItem" @hide="resetModal" ref="edit-form-modal" :key="editFormModal">
+            <b-modal id="edit-form-modal" centered :title="isEdit ? 'Edit user' : 'Create user'" @ok="processItem" @show="resetModalIfCreate" ref="edit-form-modal" :key="editFormModal">
                 <b-loading v-if="submitStatus == 1"></b-loading>
                 <div v-else>
                     <div class="invalid-feedback d-block" v-if="message">
@@ -22,13 +22,13 @@ processingItem<template>
                                 <b-input-group-text><i class="fa fa-envelope-o pr-1" />Email</b-input-group-text>
                             </b-input-group-prepend>
                             <b-form-input type="email" placeholder="Email" :disabled="true" :value="processingItem.email" v-if="isEdit"/>
-                            <b-form-input type="email" placeholder="Email" @change="$v.form.$touch()" :state="$v.form.email | state" v-model="form.email" v-else/>
+                            <b-form-input type="email" placeholder="Email" :state="$v.form.email | state" v-model="form.email" v-else/>
                         </b-input-group>
                         <div class="row">
                             <div class="col-3 d-block">
                             </div>
-                            <div class="col-9 invalid-feedback text-left d-block" v-if="$v.form.email.$invalid">
-                                {{ "Please input valid email." }}
+                            <div class="col-9 invalid-feedback text-left d-block" v-if="$v.form.email.$invalid && validation && validation.email">
+                                {{ validation.email[0] }}
                             </div>
                         </div>
                     </b-form-group>
@@ -37,13 +37,13 @@ processingItem<template>
                             <b-input-group-prepend>
                                 <b-input-group-text><i class="fa fa-key pr-1" />Password</b-input-group-text>
                             </b-input-group-prepend>
-                            <b-form-input type="password" placeholder="Password" @change="$v.form.$touch()" :state="$v.form.password | state" v-model="form.password"/>
+                            <b-form-input type="password" placeholder="Password" :state="$v.form.password | state" v-model="form.password"/>
                         </b-input-group>
                         <div class="row">
                             <div class="col-3 d-block">
                             </div>
-                            <div class="col-9 invalid-feedback text-left d-block" v-if="$v.form.password.$invalid">
-                                {{ "Please input password." }}
+                            <div class="col-9 invalid-feedback text-left d-block" v-if="$v.form.password.$invalid && validation && validation.email">
+                                {{ validation.password[0] }}
                             </div>
                         </div>
                     </b-form-group>
@@ -53,13 +53,13 @@ processingItem<template>
                                 <b-input-group-text><i class="fa fa-check-square-o pr-1" />Verified at</b-input-group-text>
                             </b-input-group-prepend>
                             <b-datepicker v-model="form.email_verified_at" v-if="isEdit"/>
-                            <b-datepicker v-model="form.email_verified_at" @change="$v.form.email_verified_at.$touch()" v-else/>
+                            <b-datepicker v-model="form.email_verified_at" :state="$v.form.email_verified_at | state" v-else/>
                         </b-input-group>
                         <div class="row">
                             <div class="col-3 d-block">
                             </div>
-                            <div class="col-9 invalid-feedback text-left d-block" v-if="$v.form.email_verified_at.$invalid">
-                                {{ "Please select email verified date." }}
+                            <div class="col-9 invalid-feedback text-left d-block" v-if="$v.form.email_verified_at.$invalid && validation && validation.email_verified_at">
+                                {{ validation.email_verified_at[0] }}
                             </div>
                         </div>
                     </b-form-group>
@@ -114,7 +114,6 @@ processingItem<template>
                           </div>
                       </b-form-group>
                   </div>
-                  <!-- <p v-else class="text-center mb-0">Data submit error.</p> -->
             </b-modal>
             <div class="row justify-content-between">
                 <div class="col-4">
@@ -213,35 +212,35 @@ export default {
     name : 'cTable',
     props: {
         caption: {
-            type   : String,
+            type: String,
             default: 'Table',
         },
         hover: {
-            type   : Boolean,
+            type: Boolean,
             default: false,
         },
         striped: {
-            type   : Boolean,
+            type: Boolean,
             default: false,
         },
         bordered: {
-            type   : Boolean,
+            type: Boolean,
             default: false,
         },
         small: {
-            type   : Boolean,
+            type: Boolean,
             default: false,
         },
         fixed: {
-            type   : Boolean,
+            type: Boolean,
             default: false,
         },
         tableData: {
-            type : Object,
+            type: Object,
             default: {},
         },
         fields: {
-            type : Array,
+            type: Array,
             default: [],
         },
         loadStatus: {
@@ -253,8 +252,12 @@ export default {
             default: 2
         },
         message: {
-            type : String,
+            type: String,
             default: '',
+        },
+        validation: {
+            type: Object,
+            default: null
         }
     },
     validations () {
@@ -264,7 +267,7 @@ export default {
                 role2: { sameAs: sameAs( () => true ) },
                 role3: { sameAs: sameAs( () => true ) },
                 email: { required, email },
-                email_verified_at: { required },
+                email_verified_at: {},
                 password: { required },
             },
         }
@@ -283,23 +286,31 @@ export default {
                 email: '',
                 email_verified_at: null,
                 password: ''
-
             },
             editFormModal: 0
         }
     },
     methods: {
-        resetModal() {
+        resetModalIfCreate(bvModalEvt) {
+            if (this.isEdit) {
+                return;
+            }
+
             this.form = {
-                role1: '',
-                role2: '',
-                role3: '',
+                role1: false,
+                role2: false,
+                role3: false,
                 email: '',
                 email_verified_at: null,
                 password: ''
             }
-
+            this.validation = null
+            this.$v.$reset()
             this.processingItem = {}
+            // Uncheck role checkboxes
+            document.getElementById('role-1-checkbox').checked = false
+            document.getElementById('role-2-checkbox').checked = false
+            document.getElementById('role-3-checkbox').checked = false
         },
         setRole1Checkbox(value) {
             this.form.role1 = $('#role-1-checkbox').prop("checked")
@@ -331,7 +342,7 @@ export default {
             this.submitStatus = 2
             this.forceRerender()
             this.processingItem = item
-            this.processingItem.roleIdArr = item.roles.map(role => role.id);
+            this.processingItem.roleIdArr = item.roles.map(role => role.id)
             this.form.role1 = this.processingItem.roleIdArr.includes(1)
             this.form.role2 = this.processingItem.roleIdArr.includes(2)
             this.form.role3 = this.processingItem.roleIdArr.includes(3)
@@ -340,12 +351,6 @@ export default {
         processItem (bvModalEvt) {
             // Prevent modal from closing
             bvModalEvt.preventDefault()
-
-            // Check for data validity
-            this.$v.$touch()
-            if (this.$v.form.role1.$invalid && this.$v.form.role2.$invalid && this.$v.form.role3.$invalid) {
-                return;
-            }
 
             // Decide which logic to do
             if (this.isEdit) {
@@ -358,9 +363,7 @@ export default {
             var vm = this
             // Check for data validity
             this.$v.$touch()
-            if (this.$v.form.email_verified_at.$invalid || this.$v.form.email.$invalid || this.$v.form.password.$invalid || (this.$v.form.role1.$invalid && this.$v.form.role2.$invalid && this.$v.form.role3.$invalid)) {
-                return;
-            }
+
             // Prepare data
             let roleIdsSeq = ''
             if ($('#role-1-checkbox').prop("checked")){
@@ -372,7 +375,9 @@ export default {
             if ($('#role-3-checkbox').prop("checked")){
                 roleIdsSeq += '3,'
             }
+
             vm.processingItem.role_ids = roleIdsSeq
+            vm.processingItem.roleIdArr = vm.processingItem.role_ids.split(",");
             vm.processingItem.email = vm.form.email
             vm.processingItem.email_verified_at = vm.form.email_verified_at
             vm.processingItem.password = vm.form.password

@@ -131,7 +131,6 @@ export default {
         submit () {
             // Validation
             this.$v.$touch()
-
             this.resetPassword(this.form.email, this.form.password, this.form.password_confirmation, this.params.token)
         },
 
@@ -144,18 +143,6 @@ export default {
                 // Mark request status as loaded succesully
                 vueComponent.findTokenRequest.status = 2
                 vueComponent.form.email = response.data.password_reset.email
-
-                // if (response.data && response.data.success) {
-                //     vueComponent.validation.message = response.data.message
-                //     // Mark request status as loaded succesully
-                //     vueComponent.findTokenRequest.status = 2
-                //     vueComponent.form.email = response.data.data.email
-                // } else {
-                //     // Mark request status as failed to load
-                //     vueComponent.findTokenRequest.status = 3
-                //     // Show message error
-                //     vueComponent.validation.message = response.data.message
-                // }
             })
             .catch(error => {
                 // Mark request status as failed to load

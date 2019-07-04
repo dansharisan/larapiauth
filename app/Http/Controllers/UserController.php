@@ -350,7 +350,9 @@ class UserController extends Controller
             // Update user data
             $user->fill($request->all());
             $verifiedAt = $request->input('email_verified_at');
-            $user->email_verified_at = date("Y-m-d H:i:s", strtotime($verifiedAt));
+            if ($verifiedAt) {
+                $user->email_verified_at = date("Y-m-d H:i:s", strtotime($verifiedAt));
+            }
             $user->save();
 
             // Remove old roles
@@ -374,7 +376,7 @@ class UserController extends Controller
                                 'code' => Error::GENR0001,
                                 'message' => $e->getMessage()
                             ]
-                ]
+                ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
 
@@ -468,7 +470,9 @@ class UserController extends Controller
                 'password' => bcrypt($request->password),
                 'active' => 1
             ]);
-            $user->email_verified_at = date("Y-m-d H:i:s", strtotime($verifiedAt));
+            if ($verifiedAt) {
+                $user->email_verified_at = date("Y-m-d H:i:s", strtotime($verifiedAt));
+            }
             $user->save();
 
             // Add new roles
@@ -489,7 +493,7 @@ class UserController extends Controller
                                 'code' => Error::GENR0001,
                                 'message' => $e->getMessage()
                             ]
-                ]
+                ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
 

@@ -23,6 +23,7 @@ const snotifyOptions = {
   }
 }
 
+Vue.config.devtools = true;
 Vue.use(BootstrapVue)
 Vue.use(Sweetalert)
 Vue.use(Snotify, snotifyOptions)
