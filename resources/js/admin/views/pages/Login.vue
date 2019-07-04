@@ -2,7 +2,6 @@
     <div class="app flex-row align-items-center">
         <div class="container">
             <b-row class="justify-content-center">
-                <!-- <b-col md="8"> -->
                 <b-col md="4">
                     <b-card-group>
                         <b-card no-body class="p-4">
@@ -20,7 +19,7 @@
                                             <i class="icon-envelope-open" />
                                         </b-input-group-text>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.email" :state="$v.form.email | state" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="$v.form.email.$invalid && validation && validation.email">
                                         {{ validation.email[0] }}
                                     </div>
@@ -31,7 +30,7 @@
                                             <i class="icon-lock" />
                                         </b-input-group-text>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.password" :state="$v.form.password | state" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="$v.form.password.$invalid && validation && validation.password">
                                         {{ validation.password[0] }}
                                     </div>
