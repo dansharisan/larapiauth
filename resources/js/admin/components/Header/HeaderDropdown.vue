@@ -1,21 +1,15 @@
 <template>
-    <b-nav-item-dropdown
-    right
-    no-caret
-    >
-    <template slot="button-content">
-        <button type="button" class="btn btn-light">{{ user.email }}</button>
-    </template>
-    <b-dropdown-header
-    tag="div"
-    class="text-center"
-    >
-    <strong>Account</strong>
-</b-dropdown-header>
-<b-dropdown-item @click="logout()">
-    <i class="fa fa-sign-out" /> Logout
-</b-dropdown-item>
-</b-nav-item-dropdown>
+    <b-nav-item-dropdown right no-caret>
+        <template slot="button-content">
+            <button type="button" class="btn btn-light">{{ user.email }}</button>
+        </template>
+        <b-dropdown-header tag="div" class="text-center">
+            <strong>Account</strong>
+        </b-dropdown-header>
+        <b-dropdown-item @click="logout()">
+            <i class="fa fa-sign-out" /> Logout
+        </b-dropdown-item>
+    </b-nav-item-dropdown>
 </template>
 <script>
 import AuthAPI from '../../api/auth.js'
@@ -33,21 +27,19 @@ export default {
     },
     methods: {
         logout () {
-            var vueComponent = this
+            var vm = this
             AuthAPI.logout()
             .then(response => {
-                if (response.data && response.data.success) {
-                    // Clear user in store
-                    vueComponent.$store.dispatch('user/logout')
-                    window.location.href = "/"
-                } else {
-                    // TODO: handle error
-                    console.log(JSON.stringify(response))
-                }
+                vm.$store.dispatch('user/logout')
+                vm.$router.push({ name: 'Login' })
             })
             .catch(function(error) {
-                // TODO: handle error
-                console.log(JSON.stringify(error))
+                if (error.response) {
+                    // Show message error
+                    vm.$snotify.error("Server error")
+                } else {
+                    vm.$snotify.error("Network error")
+                }
             })
         },
     },

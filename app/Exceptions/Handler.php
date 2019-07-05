@@ -3,7 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
-use App\Http\AppResponse;
+use App\Enums\Error;
+use Symfony\Component\HttpFoundation\Response as Response;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
@@ -55,15 +56,45 @@ class Handler extends ExceptionHandler
         if ($exception instanceof UnauthorizedHttpException) {
             // detect previous instance
             if ($exception->getPrevious() instanceof TokenExpiredException) {
-                return response()->json(['success' => AppResponse::STATUS_FAILURE, 'error' => "TOKEN_EXPIRED"], $exception->getStatusCode());
+                return response()->json(
+                    ['error' =>
+                                [
+                                    'code' => Error::AUTH0008,
+                                    'message' => Error::getDescription(Error::AUTH0008)
+                                ]
+                    ], $exception->getStatusCode()
+                );
             } else if ($exception->getPrevious() instanceof TokenInvalidException) {
-                return response()->json(['success' => AppResponse::STATUS_FAILURE, 'error' => "TOKEN_INVALID"], $exception->getStatusCode());
+                return response()->json(
+                    ['error' =>
+                                [
+                                    'code' => Error::AUTH0007,
+                                    'message' => Error::getDescription(Error::AUTH0007)
+                                ]
+                    ], $exception->getStatusCode()
+                );
             } else if ($exception->getPrevious() instanceof TokenBlacklistedException) {
-                return response()->json(['success' => AppResponse::STATUS_FAILURE, 'error' => "TOKEN_BLACKLISTED"], $exception->getStatusCode());
+                return response()->json(
+                    ['error' =>
+                                [
+                                    'code' => Error::AUTH0009,
+                                    'message' => Error::getDescription(Error::AUTH0009)
+                                ]
+                    ], $exception->getStatusCode()
+                );
+                return response()->json(['error' => "TOKEN_BLACKLISTED"], $exception->getStatusCode());
             } else {
-                return response()->json(['success' => AppResponse::STATUS_FAILURE, 'error' => "UNAUTHORIZED_REQUEST"], AppResponse::HTTP_UNAUTHORIZED);
+                return response()->json(
+                    ['error' =>
+                                [
+                                    'code' => Error::AUTH0010,
+                                    'message' => Error::getDescription(Error::AUTH0010)
+                                ]
+                    ], Response::HTTP_UNAUTHORIZED
+                );
             }
         }
+
         return parent::render($request, $exception);
     }
 
@@ -84,8 +115,14 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-        	$response = ['success' => AppResponse::STATUS_FAILURE,'message' => 'Invalid access token'];
-        	return response()->json($response, AppResponse::HTTP_UNAUTHORIZED);
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::AUTH0007,
+                                'message' => Error::getDescription(Error::AUTH0007)
+                            ]
+                ], Response::HTTP_UNAUTHORIZED
+            );
         }
 
         return redirect()->guest('login');

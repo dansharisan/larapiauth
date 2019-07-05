@@ -1,18 +1,20 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Validator;
 use Carbon\Carbon;
-use App\User;
+use App\Models\User;
+use App\Enums\Error;
+use App\Enums\RoleType;
+use App\Enums\UserStatus;
+use Illuminate\Http\Request;
+use App\Models\PasswordReset;
+use Illuminate\Support\Facades\Auth;
 use App\Notifications\RegisterActivate;
 use App\Notifications\PasswordResetRequest;
 use App\Notifications\PasswordResetSuccess;
 use App\Notifications\PasswordChangeSuccess;
-use App\PasswordReset;
-use App\Http\AppResponse;
-use Validator;
-use App\Enums\RoleType;
+use Symfony\Component\HttpFoundation\Response as Response;
 
 class AuthController extends Controller
 {
@@ -29,7 +31,7 @@ class AuthController extends Controller
     *         ),
     *         @OA\Response(
     *             response=422,
-    *             description="Invalid input or email taken"
+    *             description="Validation error"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -72,7 +74,16 @@ class AuthController extends Controller
             'password_confirmation' => 'required|string|same:password'
         ]);
         if ($validator->fails()) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'errors'=>$validator->errors()], AppResponse::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Create user
@@ -89,7 +100,7 @@ class AuthController extends Controller
         // Send email with activation link
         $user->notify(new RegisterActivate($user));
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK);
+        return response()->json(['user' => $user], Response::HTTP_OK);
     }
 
     /**
@@ -105,7 +116,7 @@ class AuthController extends Controller
     *         ),
     *         @OA\Response(
     *             response=422,
-    *             description="Invalid input"
+    *             description="Validation error"
     *         ),
     *         @OA\Response(
     *             response=403,
@@ -145,22 +156,38 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         if ($validator->fails()) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'errors'=>$validator->errors()], AppResponse::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $credentials = request(['email', 'password']);
-        $credentials['active'] = 1;
+        $credentials['status'] = 1;
         $credentials['deleted_at'] = null;
 
         // Check the combination of email and password, also check for activation status
         if(!$token = auth('api')->attempt($credentials)) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => 'Wrong combination of email and password or email has not been verified'], AppResponse::HTTP_UNAUTHORIZED);
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::AUTH0001,
+                                'message' => Error::getDescription(Error::AUTH0001)
+                            ]
+                ], Response::HTTP_UNAUTHORIZED
+            );
         }
 
         $user = auth('api')->user();
         $user['roles'] = $user->getRoleNames();
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK)->withCookie('token', $token, config('jwt.ttl'), "/", null, false, true);
+        return response()->json(['user' => $user], Response::HTTP_OK)->withCookie('token', $token, config('jwt.ttl'), "/", null, false, true);
     }
 
     /**
@@ -171,8 +198,8 @@ class AuthController extends Controller
     *         description="Logout an user",
     *         operationId="logout",
     *         @OA\Response(
-    *             response=200,
-    *             description="Successful operation"
+    *             response=204,
+    *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -184,7 +211,7 @@ class AuthController extends Controller
     {
         auth('api')->logout();
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => 'Successfully logged out'], AppResponse::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -206,9 +233,10 @@ class AuthController extends Controller
     */
     public function getUser(Request $request)
     {
-        $data = $request->user();
-        $data['roles'] = $data->getRoleNames();
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $data], AppResponse::HTTP_OK);
+        $user = $request->user();
+        $user['roles'] = $user->getRoleNames();
+
+        return response()->json(['user' => $user], Response::HTTP_OK);
     }
 
     /**
@@ -233,7 +261,7 @@ class AuthController extends Controller
     *         ),
     *         @OA\Response(
     *             response=400,
-    *             description="Invalid token"
+    *             description="Invalid input data"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -246,15 +274,22 @@ class AuthController extends Controller
         $user = User::where('activation_token', $token)->first();
         // If the token is not existing, throw error
         if (!$user) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => 'This activation token is invalid'], AppResponse::HTTP_BAD_REQUEST);
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::AUTH0002,
+                                'message' => Error::getDescription(Error::AUTH0002)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
         }
         // Update activation info
-        $user->active = true;
+        $user->status = UserStatus::Activated;
         $user->activation_token = '';
         $user->email_verified_at = Carbon::now();
         $user->save();
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK);
+        return response()->json(['user' => $user], Response::HTTP_OK);
     }
 
     /**
@@ -265,16 +300,16 @@ class AuthController extends Controller
     *         description="Generate password reset token and send that token to user through mail",
     *         operationId="createPasswordResetToken",
     *         @OA\Response(
-    *             response=200,
-    *             description="Successful operation"
+    *             response=204,
+    *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
     *             response=400,
-    *             description="Email not existing"
+    *             description="Invalid input data"
     *         ),
     *         @OA\Response(
     *             response=422,
-    *             description="Invalid input"
+    *             description="Validation error"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -303,13 +338,29 @@ class AuthController extends Controller
             'email' => 'required|string|email',
         ]);
         if ($validator->fails()) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'errors'=>$validator->errors()], AppResponse::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $user = User::where('email', $request->email)->first();
         // If the email is not existing, throw error
         if (!$user) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "We can't find a user with that e-mail address"], AppResponse::HTTP_BAD_REQUEST);
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::AUTH0003,
+                                'message' => Error::getDescription(Error::AUTH0003)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
         }
         // Create or update token
         $passwordReset = PasswordReset::updateOrCreate(
@@ -323,7 +374,7 @@ class AuthController extends Controller
             $user->notify(new PasswordResetRequest($passwordReset->token));
         }
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'message' => "We have e-mailed your password reset link"], AppResponse::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -348,7 +399,7 @@ class AuthController extends Controller
     *         ),
     *         @OA\Response(
     *             response=400,
-    *             description="Invalid token"
+    *             description="Invalid input data"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -361,15 +412,29 @@ class AuthController extends Controller
         // Make sure the password reset token is findable, otherwise throw error
         $passwordReset = PasswordReset::where('token', $token)->first();
         if (!$passwordReset) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "This password reset token is invalid"], AppResponse::HTTP_BAD_REQUEST);
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::AUTH0004,
+                                'message' => Error::getDescription(Error::AUTH0004)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
         }
 
         if (Carbon::parse($passwordReset->updated_at)->addMinutes(720)->isPast()) {
             $passwordReset->delete();
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "This password reset token is invalid"], AppResponse::HTTP_BAD_REQUEST);
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::AUTH0005,
+                                'message' => Error::getDescription(Error::AUTH0005)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
         }
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $passwordReset], AppResponse::HTTP_OK);
+        return response()->json(['password_reset' => $passwordReset], Response::HTTP_OK);
     }
 
     /**
@@ -389,7 +454,7 @@ class AuthController extends Controller
     *         ),
     *         @OA\Response(
     *             response=422,
-    *             description="Invalid input"
+    *             description="Validation error"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -438,7 +503,16 @@ class AuthController extends Controller
             'token' => 'required|string'
         ]);
         if ($validator->fails()) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'errors'=>$validator->errors()], AppResponse::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $passwordReset = PasswordReset::where([
@@ -446,12 +520,26 @@ class AuthController extends Controller
             ['email', $request->email]
         ])->first();
         if (!$passwordReset) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "Invalid input data"], AppResponse::HTTP_BAD_REQUEST);
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::AUTH0006,
+                                'message' => Error::getDescription(Error::AUTH0006)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
         }
 
         $user = User::where('email', $passwordReset->email)->first();
         if (!$user) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => "We can't find a user with that e-mail address"], AppResponse::HTTP_BAD_REQUEST);
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::AUTH0003,
+                                'message' => Error::getDescription(Error::AUTH0003)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
         }
 
         // Save new password
@@ -462,7 +550,7 @@ class AuthController extends Controller
         // Send notification email
         $user->notify(new PasswordResetSuccess($passwordReset));
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK);
+        return response()->json(['user' => $user], Response::HTTP_OK);
     }
 
     /**
@@ -478,7 +566,7 @@ class AuthController extends Controller
     *         ),
     *         @OA\Response(
     *             response=422,
-    *             description="Invalid input"
+    *             description="Validation error"
     *         ),
     *         @OA\Response(
     *             response=403,
@@ -528,18 +616,34 @@ class AuthController extends Controller
             'new_password' => 'required|string|confirmed'
         ]);
         if ($validator->fails()) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'errors'=>$validator->errors()], AppResponse::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Check if the combination of email and password is correct, if it is then proceed, if no, throw error
         $credentials = request(['password']);
         $credentials['email'] = $email;
-        $credentials['active'] = 1;
+        $credentials['status'] = UserStatus::Activated;
         $credentials['deleted_at'] = null;
 
         // Check the combination of email and password, also check for activation status
         if(!Auth::guard('web')->attempt($credentials)) {
-            return response()->json(['success' => AppResponse::STATUS_FAILURE, 'message' => 'Wrong combination of email and password or email has not been verified'], AppResponse::HTTP_UNAUTHORIZED);
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::AUTH0001,
+                                'message' => Error::getDescription(Error::AUTH0001)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
         }
 
         // Save new password
@@ -549,7 +653,7 @@ class AuthController extends Controller
         // Send notification email
         $user->notify(new PasswordChangeSuccess());
 
-        return response()->json(['success' => AppResponse::STATUS_SUCCESS, 'data' => $user], AppResponse::HTTP_OK);
+        return response()->json(['user' => $user], Response::HTTP_OK);
     }
 
     protected function respondWithToken($token)

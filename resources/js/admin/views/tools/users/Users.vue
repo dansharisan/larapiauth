@@ -1,6 +1,5 @@
 <template>
     <div class="animated fadeIn">
-        <vue-snotify></vue-snotify>
         <b-row>
             <b-col sm="12">
                 <c-table
@@ -22,6 +21,7 @@
                 :loadStatus="loadStatus"
                 :submitStatus="submitStatus"
                 :message="message"
+                :validation="validation"
                 />
             </b-col>
         </b-row>
@@ -50,6 +50,7 @@ export default {
             loadStatus: 0,
             submitStatus: 2,
             message: '',
+            validation: null
         }
     },
     methods: {
@@ -64,18 +65,20 @@ export default {
             vm.loadStatus = 1
             UserAPI.deleteUsers(userIdsSeq)
             .then(response => {
-                if (response.data.success) {
-                    vm.getUsers(currentPage, perPage)
-                    vm.$snotify.success(response.data.message)
-                } else {
-                    vm.loadStatus = 3
-                    vm.$snotify.error(response.data.message)
-                }
+                vm.getUsers(currentPage, perPage)
+                vm.$snotify.success("Deleted successfully")
             })
             .catch(error => {
-                vm.loadStatus = 3
-                if (error && error.response && error.response.data && error.response.data.message) {
-                    vm.$snotify.error(error.response.data.message)
+                // Return back loadStatus value
+                if (vm.tableData) {
+                    vm.loadStatus = 2
+                } else {
+                    vm.loadStatus = 3
+                }
+                if (error && error.response) {
+                    vm.$snotify.error("Failed to delete selected user(s): " + error.response.data.error.message)
+                } else {
+                    vm.$snotify.error("Network error")
                 }
             })
         },
@@ -84,18 +87,20 @@ export default {
             vm.loadStatus = 1
             UserAPI.deleteUser(userId)
             .then(response => {
-                if (response.data.success) {
-                    vm.getUsers(currentPage, perPage)
-                    vm.$snotify.success(response.data.message)
-                } else {
-                    vm.loadStatus = 3
-                    vm.$snotify.error(response.data.message)
-                }
+                vm.getUsers(currentPage, perPage)
+                vm.$snotify.success("Deleted successfully")
             })
             .catch(error => {
-                vm.loadStatus = 3
-                if (error && error.response && error.response.data && error.response.data.message) {
-                    vm.$snotify.error(error.response.data.message)
+                // Return back loadStatus value
+                if (vm.tableData) {
+                    vm.loadStatus = 2
+                } else {
+                    vm.loadStatus = 3
+                }
+                if (error && error.response) {
+                    vm.$snotify.error("Failed to delete this user: " + error.response.data.error.message)
+                } else {
+                    vm.$snotify.error("Network error")
                 }
             })
         },
@@ -104,18 +109,20 @@ export default {
             vm.loadStatus = 1
             UserAPI.banUser(userId)
             .then(response => {
-                if (response.data.success) {
-                    vm.getUsers(currentPage, perPage)
-                    vm.$snotify.success(response.data.message)
-                } else {
-                    vm.loadStatus = 3
-                    vm.$snotify.error(response.data.message)
-                }
+                vm.getUsers(currentPage, perPage)
+                vm.$snotify.success("Banned successfully")
             })
             .catch(error => {
-                vm.loadStatus = 3
-                if (error && error.response && error.response.data && error.response.data.message) {
-                    vm.$snotify.error(error.response.data.message)
+                // Return back loadStatus value
+                if (vm.tableData) {
+                    vm.loadStatus = 2
+                } else {
+                    vm.loadStatus = 3
+                }
+                if (error && error.response) {
+                    vm.$snotify.error("Failed to ban this user: " + error.response.data.error.message)
+                } else {
+                    vm.$snotify.error("Network error")
                 }
             })
         },
@@ -124,18 +131,20 @@ export default {
             vm.loadStatus = 1
             UserAPI.unbanUser(userId)
             .then(response => {
-                if (response.data.success) {
-                    vm.getUsers(currentPage, perPage)
-                    vm.$snotify.success(response.data.message)
-                } else {
-                    vm.loadStatus = 3
-                    vm.$snotify.error(response.data.message)
-                }
+                vm.getUsers(currentPage, perPage)
+                vm.$snotify.success("Unbanned successfully")
             })
             .catch(error => {
-                vm.loadStatus = 3
-                if (error && error.response && error.response.data && error.response.data.message) {
-                    vm.$snotify.error(error.response.data.message)
+                // Return back loadStatus value
+                if (vm.tableData) {
+                    vm.loadStatus = 2
+                } else {
+                    vm.loadStatus = 3
+                }
+                if (error && error.response) {
+                    vm.$snotify.error("Failed to unban this user: " + error.response.data.error.message)
+                } else {
+                    vm.$snotify.error("Network error")
                 }
             })
         },
@@ -144,12 +153,8 @@ export default {
             vm.loadStatus = 1
             UserAPI.getUsers(page, perPage)
             .then(response => {
-                if (response.data.success) {
-                    vm.tableData = response.data.data
-                    vm.loadStatus = 2
-                } else {
-                    vm.loadStatus = 3
-                }
+                vm.tableData = response.data.users
+                vm.loadStatus = 2
             })
             .catch(error => {
                 vm.loadStatus = 3
@@ -160,19 +165,22 @@ export default {
             vm.submitStatus = 1
             UserAPI.editUser(userItem.id, userItem.email_verified_at, userItem.role_ids)
             .then(response => {
-                if (response.data.success) {
-                    vm.submitStatus = 2
-                    vm.getUsers(currentPage, perPage)
-                    vm.$snotify.success(response.data.message)
-                } else {
-                    vm.submitStatus = 3
-                    vm.$snotify.error(response.data.message)
-                }
+                vm.submitStatus = 2
+                vm.getUsers(currentPage, perPage)
+                vm.$snotify.success("Edited successfully")
             })
             .catch(error => {
-                vm.submitStatus = 3
-                if (error && error.response && error.response.data && error.response.data.message) {
-                    vm.$snotify.error(error.response.data.message)
+                // Return back loadStatus value
+                if (vm.tableData) {
+                    vm.submitStatus = 2
+                } else {
+                    vm.submitStatus = 3
+                }
+                if (error && error.response) {
+                    vm.validation = error.response.data.validation;
+                    vm.$snotify.error("Failed to create this user: " + error.response.data.error.message)
+                } else {
+                    vm.$snotify.error("Network error")
                 }
             })
         },
@@ -181,19 +189,23 @@ export default {
             vm.submitStatus = 1
             UserAPI.createUser(userItem.email, userItem.email_verified_at, userItem.password, userItem.password, userItem.role_ids)
             .then(response => {
-                if (response.data.success) {
-                    vm.submitStatus = 2
-                    vm.getUsers(currentPage, perPage)
-                    vm.$snotify.success(response.data.message)
-                } else {
-                    vm.submitStatus = 2
-                    vm.$snotify.error(response.data.message)
-                }
+                vm.submitStatus = 2
+                vm.getUsers(currentPage, perPage)
+                vm.$snotify.success("Created successfully")
             })
             .catch(error => {
-                vm.submitStatus = 3
-                vm.message = error.response.data.message
-                vm.$snotify.error("Failed to create user.")
+                // Return back loadStatus value
+                if (vm.tableData) {
+                    vm.submitStatus = 2
+                } else {
+                    vm.submitStatus = 3
+                }
+                if (error && error.response) {
+                    vm.validation = error.response.data.validation;
+                    vm.$snotify.error("Failed to create this user: " + error.response.data.error.message)
+                } else {
+                    vm.$snotify.error("Network error")
+                }
             })
         }
     },
