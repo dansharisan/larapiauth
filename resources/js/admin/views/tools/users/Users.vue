@@ -1,6 +1,5 @@
 <template>
     <div class="animated fadeIn">
-        <vue-snotify></vue-snotify>
         <b-row>
             <b-col sm="12">
                 <c-table

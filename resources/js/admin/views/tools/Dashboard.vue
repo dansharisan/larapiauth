@@ -1,18 +1,18 @@
 <template>
-  <div class="animated fadeIn">
+    <div class="animated fadeIn">
 
-  </div>
+    </div>
 </template>
 
 <script>
 
 export default {
-  name      : 'Dashboard',
-  data: function () {
-    return {
-    }
-  },
-  methods: {
-  },
+    name      : 'Dashboard',
+    data: function () {
+        return {
+        }
+    },
+    methods: {
+    },
 }
 </script>
