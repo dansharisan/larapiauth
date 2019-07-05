@@ -76,7 +76,8 @@ export default {
                     vm.loadStatus = 3
                 }
                 if (error && error.response) {
-                    vm.$snotify.error("Failed to delete selected user(s): " + error.response.data.error.message)
+                    let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
+                    vm.$snotify.error("Failed to delete selected user(s): " + msg)
                 } else {
                     vm.$snotify.error("Network error")
                 }
@@ -98,7 +99,8 @@ export default {
                     vm.loadStatus = 3
                 }
                 if (error && error.response) {
-                    vm.$snotify.error("Failed to delete this user: " + error.response.data.error.message)
+                    let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
+                    vm.$snotify.error("Failed to delete this user: " + msg)
                 } else {
                     vm.$snotify.error("Network error")
                 }
@@ -120,7 +122,8 @@ export default {
                     vm.loadStatus = 3
                 }
                 if (error && error.response) {
-                    vm.$snotify.error("Failed to ban this user: " + error.response.data.error.message)
+                    let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
+                    vm.$snotify.error("Failed to ban this user: " + msg)
                 } else {
                     vm.$snotify.error("Network error")
                 }
@@ -142,7 +145,8 @@ export default {
                     vm.loadStatus = 3
                 }
                 if (error && error.response) {
-                    vm.$snotify.error("Failed to unban this user: " + error.response.data.error.message)
+                    let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
+                    vm.$snotify.error("Failed to unban this user: " + msg)
                 } else {
                     vm.$snotify.error("Network error")
                 }
@@ -178,7 +182,8 @@ export default {
                 }
                 if (error && error.response) {
                     vm.validation = error.response.data.validation;
-                    vm.$snotify.error("Failed to create this user: " + error.response.data.error.message)
+                    let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
+                    vm.$snotify.error("Failed to create this user: " + msg)
                 } else {
                     vm.$snotify.error("Network error")
                 }
@@ -202,7 +207,8 @@ export default {
                 }
                 if (error && error.response) {
                     vm.validation = error.response.data.validation;
-                    vm.$snotify.error("Failed to create this user: " + error.response.data.error.message)
+                    let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
+                    vm.$snotify.error("Failed to create this user: " + msg)
                 } else {
                     vm.$snotify.error("Network error")
                 }

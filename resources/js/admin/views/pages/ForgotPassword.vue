@@ -86,27 +86,27 @@ export default {
         },
 
         requestPasswordReset (email) {
-            var vueComponent = this;
+            var vm = this;
             // Mark request status as loading
             this.request.status = 1
             // Get the access token
             AuthAPI.createPasswordResetToken(email)
             .then(response => {
-                vueComponent.notification.type = 'success'
-                vueComponent.notification.message = "An email has been sent to your email address. Please check for further instructions about resetting password."
+                vm.notification.type = 'success'
+                vm.notification.message = "An email has been sent to your email address. Please check for further instructions about resetting password."
                 // Mark request status as loaded succesully
-                vueComponent.request.status = 2
+                vm.request.status = 2
             })
             .catch(error => {
                 // Mark request status as failed to load
-                vueComponent.request.status = 3
+                vm.request.status = 3
                 if (error.response) {
                     // Show message error
-                    vueComponent.notification.type = 'danger'
-                    vueComponent.notification.message = error.response.data.error.message
-                    vueComponent.validation = error.response.data.validation
+                    vm.notification.type = 'danger'
+                    vm.notification.message = error.response.data.error ? error.response.data.error.message : error.response.data.message
+                    vm.validation = error.response.data.validation
                 } else {
-                    vueComponent.notification.message = "Network error"
+                    vm.notification.message = "Network error"
                 }
             })
         }

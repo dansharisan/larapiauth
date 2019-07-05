@@ -97,30 +97,30 @@ export default {
         },
 
         login (email, password) {
-            var vueComponent = this;
+            var vm = this;
             // Mark request status as loading
-            vueComponent.request.status = 1
+            vm.request.status = 1
             // Do the login
             var credential = {}
             credential.email = email
             credential.password = password
-            vueComponent.$store.dispatch('user/login', credential)
+            vm.$store.dispatch('user/login', credential)
             .then(res => {
                 // Mark request status as loaded succesully
-                vueComponent.request.status = 2
+                vm.request.status = 2
                 // Move to UserInfo page
-                vueComponent.$router.push({ name: 'UserInfo' })
+                vm.$router.push({ name: 'UserInfo' })
             })
             .catch(error => {
                 // Mark request status as failed to load
-                vueComponent.request.status = 3
+                vm.request.status = 3
                 if (error.response) {
                     // Show message error
-                    vueComponent.notification.type = 'danger'
-                    vueComponent.notification.message = error.response.data.error.message
-                    vueComponent.validation = error.response.data.validation
+                    vm.notification.type = 'danger'
+                    vm.notification.message = error.response.data.error ? error.response.data.error.message : error.response.data.message
+                    vm.validation = error.response.data.validation
                 } else {
-                    vueComponent.notification.message = "Network error"
+                    vm.notification.message = "Network error"
                 }
             })
         }
