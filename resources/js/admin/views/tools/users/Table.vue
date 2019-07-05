@@ -484,8 +484,8 @@ export default {
             })
         },
         getBadge (status) {
-            return status === 'Active' ? 'success'
-            : status === 'Inactive' ? 'secondary'
+            return status === 'Activated' ? 'success'
+            : status === 'Unactivated' ? 'secondary'
             : status === 'Banned' ? 'danger' : 'primary'
         },
         onChangePerPage (newPerPage) {

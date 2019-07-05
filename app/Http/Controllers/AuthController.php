@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Enums\Error;
 use App\Enums\RoleType;
+use App\Enums\UserStatus;
 use Illuminate\Http\Request;
 use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Auth;
@@ -168,7 +169,7 @@ class AuthController extends Controller
         }
 
         $credentials = request(['email', 'password']);
-        $credentials['active'] = 1;
+        $credentials['status'] = 1;
         $credentials['deleted_at'] = null;
 
         // Check the combination of email and password, also check for activation status
@@ -283,7 +284,7 @@ class AuthController extends Controller
             );
         }
         // Update activation info
-        $user->active = true;
+        $user->status = UserStatus::Activated;
         $user->activation_token = '';
         $user->email_verified_at = Carbon::now();
         $user->save();
@@ -630,7 +631,7 @@ class AuthController extends Controller
         // Check if the combination of email and password is correct, if it is then proceed, if no, throw error
         $credentials = request(['password']);
         $credentials['email'] = $email;
-        $credentials['active'] = 1;
+        $credentials['status'] = UserStatus::Activated;
         $credentials['deleted_at'] = null;
 
         // Check the combination of email and password, also check for activation status

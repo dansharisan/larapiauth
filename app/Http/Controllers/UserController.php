@@ -6,7 +6,7 @@ use Validator;
 use App\Models\User;
 use App\Enums\Error;
 use App\Enums\RoleType;
-use App\Enums\ActiveStatus;
+use App\Enums\UserStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -59,7 +59,7 @@ class UserController extends Controller
                 array_push($roleArr, RoleType::getKey($role));
             }
             $users[$i]['display_roles'] = implode(", ", $roleArr);
-            $users[$i]['status'] = ActiveStatus::getKey($users[$i]['active']);
+            $users[$i]['status'] = UserStatus::getKey($users[$i]['status']);
         }
 
         return response()->json(['users' => $users], Response::HTTP_OK);
@@ -106,7 +106,7 @@ class UserController extends Controller
             );
         }
         // Update the data
-        $user->active = ActiveStatus::Banned;
+        $user->status = UserStatus::Banned;
         $user->save();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
@@ -154,9 +154,9 @@ class UserController extends Controller
         }
         // Update the data
         if ($user->email_verified_at) {
-            $user->active = ActiveStatus::Active;
+            $user->status = UserStatus::Activated;
         } else {
-            $user->active = ActiveStatus::Inactive;
+            $user->status = UserStatus::Unactivated;
         }
         $user->save();
 
@@ -352,6 +352,9 @@ class UserController extends Controller
             $verifiedAt = $request->input('email_verified_at');
             if ($verifiedAt) {
                 $user->email_verified_at = date("Y-m-d H:i:s", strtotime($verifiedAt));
+                $user->status = UserStatus::Activated;
+            } else {
+                $user->status = UserStatus::Unactivated;
             }
             $user->save();
 
@@ -468,10 +471,12 @@ class UserController extends Controller
             $user = new User([
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
-                'active' => 1
             ]);
             if ($verifiedAt) {
                 $user->email_verified_at = date("Y-m-d H:i:s", strtotime($verifiedAt));
+                $user->status = UserStatus::Activated;
+            } else {
+                $user->status = UserStatus::Unactivated;
             }
             $user->save();
 
