@@ -307,7 +307,7 @@ export default {
                 email_verified_at: null,
                 password: ''
             }
-            this.validation = null
+            this.$emit('reset_validation')
             this.processingItem = {}
             // Uncheck role checkboxes
             if (document.getElementById('role-1-checkbox') && document.getElementById('role-2-checkbox') && document.getElementById('role-3-checkbox'))

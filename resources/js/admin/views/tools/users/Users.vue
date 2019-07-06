@@ -11,6 +11,7 @@
                 @delete_items="deleteUsers"
                 @edit_item="editUser"
                 @create_item="createUser"
+                @reset_validation="resetValidation"
                 hover
                 striped
                 bordered
@@ -54,6 +55,9 @@ export default {
         }
     },
     methods: {
+        resetValidation() {
+            this.$nextTick(() => { this.validation = null })
+        },
         updateTableDataWithPage(newPage, perPage) {
             this.getUsers(newPage, perPage)
         },
