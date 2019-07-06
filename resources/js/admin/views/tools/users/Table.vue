@@ -43,7 +43,7 @@
                         <div class="row">
                             <div class="col-3 d-block">
                             </div>
-                            <div class="col-9 invalid-feedback text-left d-block" v-if="$v.form.password.$invalid && validation && validation.email">
+                            <div class="col-9 invalid-feedback text-left d-block" v-if="$v.form.password.$invalid && validation && validation.password">
                                 {{ validation.password[0] }}
                             </div>
                         </div>
@@ -294,6 +294,7 @@ export default {
     },
     methods: {
         resetModalIfCreate(bvModalEvt) {
+            this.$v.$reset()
             if (this.isEdit) {
                 return;
             }
@@ -307,12 +308,14 @@ export default {
                 password: ''
             }
             this.validation = null
-            this.$v.$reset()
             this.processingItem = {}
             // Uncheck role checkboxes
-            document.getElementById('role-1-checkbox').checked = false
-            document.getElementById('role-2-checkbox').checked = false
-            document.getElementById('role-3-checkbox').checked = false
+            if (document.getElementById('role-1-checkbox') && document.getElementById('role-2-checkbox') && document.getElementById('role-3-checkbox'))
+            {
+                document.getElementById('role-1-checkbox').checked = false
+                document.getElementById('role-2-checkbox').checked = false
+                document.getElementById('role-3-checkbox').checked = false
+            }
         },
         setRole1Checkbox(value) {
             this.form.role1 = $('#role-1-checkbox').prop("checked")
@@ -345,6 +348,7 @@ export default {
             this.forceRerender()
             this.processingItem = item
             this.processingItem.roleIdArr = item.roles.map(role => role.id)
+            this.form.email = this.processingItem.email
             this.form.role1 = this.processingItem.roleIdArr.includes(1)
             this.form.role2 = this.processingItem.roleIdArr.includes(2)
             this.form.role3 = this.processingItem.roleIdArr.includes(3)
