@@ -27,7 +27,7 @@ Route::group([
     ], function() {
         Route::get('logout', 'AuthController@logout');
         Route::get('getUser', 'AuthController@getUser');
-        Route::post('password/change', 'AuthController@changePassword');
+        Route::patch('password/change', 'AuthController@changePassword');
     });
 
     // Limit number of requests per seconds, configured in app/Http/Kernel.php
@@ -36,6 +36,20 @@ Route::group([
     ], function () {
         Route::post('password/token/create', 'AuthController@createPasswordResetToken');
         Route::get('password/token/find/{token}', 'AuthController@findPasswordResetToken');
-        Route::post('password/reset', 'AuthController@resetPassword');
+        Route::patch('password/reset', 'AuthController@resetPassword');
     });
+});
+
+// Users API
+Route::group([
+    'prefix' => 'users',
+    'middleware' => 'jwt.auth'
+], function() {
+    Route::get('/', 'UserController@index');
+    Route::post('/', 'UserController@store');
+    Route::patch('/{id}', 'UserController@update');
+    Route::patch('/{id}/ban', 'UserController@ban');
+    Route::patch('/{id}/unban', 'UserController@unban');
+    Route::delete('/{id}', 'UserController@delete');
+    Route::post('/collection:batchDelete', 'UserController@batchDelete');
 });

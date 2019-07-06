@@ -22,7 +22,7 @@ mix.webpackConfig({
  devServer: { disableHostCheck: true },
  resolve  : {
    alias: {
-     '@'         : path.resolve(__dirname, 'resources/js/coreui/'),
+     '@'         : path.resolve(__dirname, 'resources/js/admin/'),
      'static'    : path.resolve(__dirname, 'resources/static/'),
      'validators': 'vuelidate/lib/validators',
    },
@@ -51,27 +51,6 @@ mix.vueOptions({
    'b-embed'         : 'src',
  },
 })
-
-// mix.extract([
-//  'axios',
-//  'bootstrap',
-//  'bootstrap-vue',
-//  'chart.js',
-//  'jquery',
-//  'lodash',
-//  'moment',
-//  'popper.js',
-//  'select2',
-//  'vue',
-//  'vue-chartjs',
-//  'vue-loading-spinner',
-//  'vue-router',
-//  'vue-sweetalert2',
-//  'vuejs-datepicker',
-//  'vuelidate',
-//  'vuex',
-//  'vuex-easy-access',
-// ])
 
 if (mix.inProduction())
   mix.version()

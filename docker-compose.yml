@@ -1,0 +1,39 @@
+version: '3'
+services:
+  core_services:
+    image: creativitykills/nginx-php-server
+    container_name: core
+    ports:
+      - "8888:80"
+    volumes:
+      - ./:/var/www
+    networks:
+      - backend
+
+  mysql:
+    container_name: db_mysql
+    image: mysql:5.7
+    ports:
+      - "33062:3306"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${DB_PASSWORD}"
+    volumes:
+      - "./db/mysql/data:/var/lib/mysql"
+      - "./db/mysql/initdb.d:/docker-entrypoint-initdb.d"
+    networks:
+      - backend
+  pma:
+    container_name: pma
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "9999:80"
+    environment:
+      - "PMA_HOST=db_mysql"
+      - "MYSQL_DATABASE=${DB_DATABASE}"
+      - "MYSQL_ROOT_PASSWORD=${DB_PASSWORD}"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
