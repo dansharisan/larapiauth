@@ -2,7 +2,7 @@
     <b-card :header="caption" header-class="text-left" class="text-center">
         <b-loading v-if="loadStatus == 1"></b-loading>
         <div v-else-if="loadStatus == 2">
-            <b-modal id="edit-form-modal" centered :title="isEdit ? 'Edit user' : 'Create user'" @ok="processItem" @show="resetModalIfCreate" ref="edit-form-modal" :key="editFormModal">
+            <b-modal id="edit-form-modal" modal-class="text-center" centered :title="isEdit ? 'Edit user' : 'Create user'" @ok="processItem" @show="resetModalIfCreate" ref="edit-form-modal" :key="editFormModal">
                 <b-loading v-if="submitStatus == 1"></b-loading>
                 <div v-else>
                     <div class="invalid-feedback d-block" v-if="message">
