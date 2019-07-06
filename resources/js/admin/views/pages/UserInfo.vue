@@ -4,10 +4,7 @@
             <b-row class="justify-content-center">
                 <b-col md="4">
                     <b-card-group>
-                        <b-card
-                        no-body
-                        class="p-4"
-                        >
+                        <b-card no-body class="p-4">
                         <b-card-body>
                             <h2>User Info</h2>
                             <p class="text-muted">

@@ -129,51 +129,51 @@ export default {
         },
 
         checkToken (token) {
-            var vueComponent = this;
+            var vm = this;
             this.findTokenRequest.status = 1
             AuthAPI.findPasswordResetToken(token)
             .then(response => {
-                vueComponent.notification.type = 'success'
+                vm.notification.type = 'success'
                 // Mark request status as loaded succesully
-                vueComponent.findTokenRequest.status = 2
-                vueComponent.form.email = response.data.password_reset.email
+                vm.findTokenRequest.status = 2
+                vm.form.email = response.data.password_reset.email
             })
             .catch(error => {
                 // Mark request status as failed to load
-                vueComponent.findTokenRequest.status = 3
+                vm.findTokenRequest.status = 3
                 if (error.response) {
                     // Show message error
-                    vueComponent.notification.type = 'danger'
-                    vueComponent.notification.message = error.response.data.error.message
-                    vueComponent.validation = error.response.data.validation
+                    vm.notification.type = 'danger'
+                    vm.notification.message = error.response.data.error ? error.response.data.error.message : error.response.data.message
+                    vm.validation = error.response.data.validation
                 } else {
-                    vueComponent.notification.message = "Network error"
+                    vm.notification.message = "Network error"
                 }
             })
         },
 
         resetPassword (email, password, password_confirmation, token) {
-            var vueComponent = this;
+            var vm = this;
             // Mark request status as loading
             this.resetPasswordRequest.status = 1
             // Get the access token
             AuthAPI.resetPassword(email, password, password_confirmation, token)
             .then(response => {
-                vueComponent.notification.type = 'success'
+                vm.notification.type = 'success'
                 // Mark request status as loaded succesully
-                vueComponent.resetPasswordRequest.status = 2
-                vueComponent.notification.message = "Your password has been reset successfully"
+                vm.resetPasswordRequest.status = 2
+                vm.notification.message = "Your password has been reset successfully"
             })
             .catch(error => {
                 // Mark request status as failed to load
-                vueComponent.resetPasswordRequest.status = 3
+                vm.resetPasswordRequest.status = 3
                 if (error.response) {
                     // Show message error
-                    vueComponent.notification.type = 'danger'
-                    vueComponent.notification.message = error.response.data.error.message
-                    vueComponent.validation = error.response.data.validation
+                    vm.notification.type = 'danger'
+                    vm.notification.message = error.response.data.error ? error.response.data.error.message : error.response.data.message
+                    vm.validation = error.response.data.validation
                 } else {
-                    vueComponent.notification.message = "Network error"
+                    vm.notification.message = "Network error"
                 }
             })
         }

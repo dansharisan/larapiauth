@@ -45,6 +45,13 @@ You can go to http://larapiauth.rakuyomi.net/api/ to play with the API.
 - If you're deploying it to real server, copy everything inside vendor\swagger-api\swagger-ui\dist to public\docs\asset on your server. You need to create docs\asset if it's not existing.
 - Run "php artisan serve" to start the server then go to localhost:8000 and enjoy
 
+# Run with docker
+- Run "docker-compose up -d" to build and start the container
+- Go to http://localhost:8888 then create a new database (name it same with in .env file - here "larapiauth")
+- Run "docker exec -it core bash" to to start interacting with the core php-nginx container
+- Run "php artisan migrate:fresh --seed" to run fresh migrations and seeders
+- Run the app at http://localhost:9999
+
 # Donation
 If this project help you reduce time to develop, you can give me a cup of coffee :)
 
