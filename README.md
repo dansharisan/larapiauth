@@ -48,7 +48,8 @@ You can go to http://larapiauth.rakuyomi.net/api/ to play with the API.
 # Run with docker
 - Run "docker-compose up -d" to build and start the container
 - Go to http://localhost:8888 then create a new database (name it same with in .env file - here "larapiauth")
-- Run "docker exec -it core bash" to to start interacting with the core php-nginx container
+- In .env file, set DB_HOST to db_mysql
+- Run "alias docker="winpty docker"" (if you're on Windows) and then "docker exec -it core bash" to to start interacting with the core php-nginx container
 - Run "php artisan migrate:fresh --seed" to run fresh migrations and seeders
 - Run the app at http://localhost:9999
 
