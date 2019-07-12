@@ -7,7 +7,7 @@ An authentication API + CoreUI Admin panel boilerplate built from Laravel that c
 - Member account: member@larapiauth.test / member
 
 Admin has the access to the panel, while normal member can only see his/her info.
-You can go to http://larapiauth.rakuyomi.net/api/ to play with the API.
+You can go to http://larapiauth.rakuyomi.net/api/documentation to play with the API.
 
 # Features
 - Built using Laravel 5.8.3
