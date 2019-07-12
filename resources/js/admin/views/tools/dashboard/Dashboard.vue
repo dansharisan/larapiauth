@@ -20,9 +20,9 @@
                             <b-dropdown-item>Another action</b-dropdown-item>
                         </b-dropdown> -->
                         <h4 class="mb-0">{{ userStats.totalUser }}</h4>
-                        <p>Registered users</p>
+                        <p>Total registered users</p>
                     </b-card-body>
-                    <card-bar-chart chartId="card-chart-04" class="chart-wrapper px-3" style="height:70px;" height="70"/>
+                    <card-bar-chart :data="userStats.last7DayStats" chartId="card-chart-04" class="chart-wrapper px-3" style="height:70px;" height="70"/>
                 </template>
 
                 <template v-else-if="userStats.loadStatus == 3">

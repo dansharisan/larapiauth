@@ -539,7 +539,7 @@ class UserController extends Controller
             $totalUsersOfDay = User::whereBetween('created_at', [$eachDay . " 00:00:00", $eachDay . " 23:59:59"])->count();
             $last7DayStats[$eachDay] = $totalUsersOfDay;
         }
-        $registeredUserStats['last_7_day_stats'] = $last7DayStats;
+        $registeredUserStats['last_7_day_stats'] = array_reverse($last7DayStats);
 
         return response()->json(['user_stats' => $registeredUserStats], Response::HTTP_OK);
     }

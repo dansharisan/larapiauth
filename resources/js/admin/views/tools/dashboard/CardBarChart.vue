@@ -4,20 +4,23 @@ import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips'
 
 export default {
     extends: Bar,
-    props: ['height'],
+    props: [
+        'height'
+        , 'data'
+    ],
     mounted () {
-        const datasets4 = [
+        const datasets = [
             {
-                label: 'My First dataset',
+                label: 'New user(s)',
                 backgroundColor: 'rgba(255,255,255,.3)',
                 borderColor: 'transparent',
-                data: [78, 81, 80, 45, 34, 12, 40, 75, 34, 89, 32, 68, 54, 72, 18, 98]
+                data: Object.values(this.data)
             }
         ]
         this.renderChart(
             {
-                labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-                datasets: datasets4
+                labels: Object.keys(this.data),
+                datasets: datasets
             },
             {
                 tooltips: {
