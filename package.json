@@ -22,6 +22,8 @@
     },
     "dependencies": {
         "@babel/core": "^7.4.5",
+        "@coreui/coreui-plugin-chartjs-custom-tooltips": "^1.2.0",
+        "@coreui/coreui": "^2.1.6",
         "animate.css": "^3.7.0",
         "axios": "^0.18",
         "bootstrap": "^4.3.1",
