@@ -190,7 +190,7 @@
                 </template>
             </b-table>
         </div>
-        <p v-else-if="loadStatus == 3" class="text-center mb-0">Data load error.</p>
+        <p v-else-if="loadStatus == 3" class="text-center mb-0">Data load error</p>
         <nav v-if="loadStatus == 2">
             <b-pagination
             v-model="currentPage"

@@ -52,4 +52,5 @@ Route::group([
     Route::patch('/{id}/unban', 'UserController@unban');
     Route::delete('/{id}', 'UserController@delete');
     Route::post('/collection:batchDelete', 'UserController@batchDelete');
+    Route::get('/registered_user_stats', 'UserController@registeredUserStats');
 });

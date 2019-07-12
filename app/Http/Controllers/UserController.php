@@ -383,7 +383,7 @@ class UserController extends Controller
             );
         }
 
-        return response()->json(['data' => $user], Response::HTTP_OK);
+        return response()->json(['user' => $user], Response::HTTP_OK);
     }
 
     /**
@@ -502,6 +502,45 @@ class UserController extends Controller
             );
         }
 
-        return response()->json(['data' => $user], Response::HTTP_OK);
+        return response()->json(['user' => $user], Response::HTTP_OK);
+    }
+
+    /**
+    * @OA\Get(
+    *         path="/api/users/registered_user_stats",
+    *         tags={"Users"},
+    *         summary="Get registered user stats",
+    *         description="Get registered user stats",
+    *         operationId="registered-user-stats",
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    * )
+    */
+    public function registeredUserStats(Request $request)
+    {
+        $registeredUserStats = [];
+        $last7Days = [];
+        $last7DayStats = [];
+
+        $registeredUserStats['total'] = User::count();
+
+        for ($i=0; $i<7; $i++)
+        {
+            array_push($last7Days, date("Y-m-d", strtotime($i." days ago")));
+        }
+
+        foreach ($last7Days as $eachDay) {
+            $totalUsersOfDay = User::whereBetween('created_at', [$eachDay . " 00:00:00", $eachDay . " 23:59:59"])->count();
+            $last7DayStats[$eachDay] = $totalUsersOfDay;
+        }
+        $registeredUserStats['last_7_day_stats'] = array_reverse($last7DayStats);
+
+        return response()->json(['user_stats' => $registeredUserStats], Response::HTTP_OK);
     }
 }
