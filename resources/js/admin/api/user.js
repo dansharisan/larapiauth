@@ -78,4 +78,12 @@ export default {
             email_verified_at: verifiedAt
         });
     },
+
+    /*
+    Get /api/users/registered_user_stats
+    To get user stats
+    */
+    getUserStats: function() {
+        return axios.get(APP_CONFIG.API_URL + '/users/registered_user_stats');
+    },
 }

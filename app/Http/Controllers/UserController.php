@@ -383,7 +383,7 @@ class UserController extends Controller
             );
         }
 
-        return response()->json(['data' => $user], Response::HTTP_OK);
+        return response()->json(['user' => $user], Response::HTTP_OK);
     }
 
     /**
@@ -502,7 +502,7 @@ class UserController extends Controller
             );
         }
 
-        return response()->json(['data' => $user], Response::HTTP_OK);
+        return response()->json(['user' => $user], Response::HTTP_OK);
     }
 
     /**
@@ -541,6 +541,6 @@ class UserController extends Controller
         }
         $registeredUserStats['last_7_day_stats'] = $last7DayStats;
 
-        return response()->json($registeredUserStats);
+        return response()->json(['user_stats' => $registeredUserStats], Response::HTTP_OK);
     }
 }
