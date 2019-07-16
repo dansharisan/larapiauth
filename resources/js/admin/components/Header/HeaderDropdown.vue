@@ -1,10 +1,10 @@
 <template>
     <b-nav-item-dropdown right no-caret>
         <template slot="button-content">
-            <button type="button" class="btn btn-light">{{ user.email }}</button>
+            <abbr :title="user.email"><button type="button" class="btn btn-light">Account</button></abbr>
         </template>
         <b-dropdown-header tag="div" class="text-center">
-            <strong>Account</strong>
+            <strong>{{ user.email }}</strong>
         </b-dropdown-header>
         <b-dropdown-item @click="logout()">
             <i class="fa fa-sign-out" /> Logout

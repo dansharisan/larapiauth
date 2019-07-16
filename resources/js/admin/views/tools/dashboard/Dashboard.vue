@@ -5,7 +5,7 @@
 
                 <template v-if="userStats.loadStatus == 1">
                     <b-card-body class="pb-0 text-center">
-                        <b-loading background="#fff" size="57px"></b-loading>
+                        <b-loading background="#fff" margin="11px"></b-loading>
                     </b-card-body>
                     <div style="height: 70px;">&nbsp;</div>
                 </template>

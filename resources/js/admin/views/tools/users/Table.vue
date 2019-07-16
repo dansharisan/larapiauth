@@ -128,14 +128,11 @@
                         :options="[{ text: '15', value: 15}, { text: '30', value: 30}, { text: '50', value: 50}]"
                         size="xs"
                         value="Please select"
-                        class="col-2"
+                        class="col-12"
                       />
-                      <b-input-group-append is-text>
-                          items per page
-                      </b-input-group-append>
                     </b-input-group>
                 </div>
-                <div class="col-2 text-right">
+                <div class="col-8 text-right">
                     <b-button size="sm" class="btn-action" variant="danger" @click="deleteItems()" v-if="hasChecked">
                         <i class="fa fa-remove text-white" aria-hidden="true"></i> <span class="text-white">Delete</span>
                     </b-button>
@@ -173,6 +170,9 @@
                     <b-badge :variant="getBadge(row.item.status)">
                         {{ row.item.status }}
                     </b-badge>
+                </template>
+                <template slot="created_at" slot-scope="row" v-if="tableData.data.length > 0 && tableData.data[0].created_at">
+                    {{ row.item.created_at.slice(0, -8) }}
                 </template>
                 <template slot="actions" slot-scope="row">
                     <b-button size="sm" class="btn-action" variant="warning" @click="prepareEditingItem(row.item)" v-b-modal.edit-form-modal>
