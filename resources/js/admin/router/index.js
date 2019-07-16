@@ -5,7 +5,7 @@ import Router from 'vue-router'
 import Full from '@/containers/Full'
 
 // Tools
-import Dashboard from '@/views/tools/Dashboard'
+import Dashboard from '@/views/tools/dashboard/Dashboard'
 import Users from '@/views/tools/users/Users'
 
 // Views - Pages

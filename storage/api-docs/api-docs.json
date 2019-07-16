@@ -615,6 +615,24 @@
                     }
                 }
             }
+        },
+        "/api/users/registered_user_stats": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get registered user stats",
+                "description": "Get registered user stats",
+                "operationId": "registered-user-stats",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
         }
     }
 }

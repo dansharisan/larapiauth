@@ -19,6 +19,9 @@ export default {
     },
     duration: {
       default: '1.2s'
+    },
+    margin: {
+      default: '0px'
     }
   },
   computed: {
@@ -31,7 +34,8 @@ export default {
     styles () {
       return {
         width: this.size,
-        height: this.size
+        height: this.size,
+        margin: this.margin
       }
     }
   }

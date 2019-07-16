@@ -45,7 +45,7 @@ export default {
                 { key: 'email' },
                 { key: 'display_roles', label: 'Role(s)' },
                 { key: 'status', label: 'Status' },
-                { key: 'created_at', label: 'Registered' },
+                { key: 'created_at', label: 'Registration date' },
                 { key: 'actions' }
             ],
             loadStatus: 0,
