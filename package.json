@@ -12,7 +12,7 @@
     "devDependencies": {
         "cross-env": "^5.1",
         "laravel-mix": "^4.0.14",
-        "lodash": "^4.17.11",
+        "lodash": "^4.17.13",
         "popper.js": "^1.15.0",
         "resolve-url-loader": "^2.3.1",
         "sass": "^1.19.0",
@@ -22,8 +22,8 @@
     },
     "dependencies": {
         "@babel/core": "^7.4.5",
-        "@coreui/coreui-plugin-chartjs-custom-tooltips": "^1.2.0",
         "@coreui/coreui": "^2.1.6",
+        "@coreui/coreui-plugin-chartjs-custom-tooltips": "^1.2.0",
         "animate.css": "^3.7.0",
         "axios": "^0.18",
         "bootstrap": "^4.3.1",
@@ -33,6 +33,7 @@
         "font-awesome": "^4.7.0",
         "jquery": "^3.4.0",
         "moment": "^2.24.0",
+        "perfect-scrollbar": "^1.4.0",
         "select2": "^4.0.6-rc.1",
         "select2-bootstrap4-theme": "^1.0.0",
         "simple-line-icons": "^2.4.1",
