@@ -12,7 +12,7 @@
     "devDependencies": {
         "cross-env": "^5.1",
         "laravel-mix": "^4.0.14",
-        "lodash": "^4.17.11",
+        "lodash": "^4.17.13",
         "popper.js": "^1.15.0",
         "resolve-url-loader": "^2.3.1",
         "sass": "^1.19.0",
