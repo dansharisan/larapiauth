@@ -25,7 +25,7 @@
         "@coreui/coreui-plugin-chartjs-custom-tooltips": "^1.2.0",
         "@coreui/coreui": "^2.1.6",
         "animate.css": "^3.7.0",
-        "axios": "^0.18",
+        "axios": "^0.21",
         "bootstrap": "^4.3.1",
         "bootstrap-vue": "^2.0.0-rc.18",
         "chart.js": "^2.7.3",
